@@ -1,0 +1,81 @@
+.forms-container,
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    position: relative;
+    left: -50px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.field-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.title,
+.field-label,
+.header {
+    color: rgb(83, 1, 1);
+}
+
+.field-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.name-fields-container,
+.email-and-number,
+.type-and-copies,
+.remarks-and-status {
+    display: grid;
+    column-gap: 10px;
+}
+
+.name-fields-container {
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.email-and-number {
+    grid-template-columns: 2fr 1fr;
+}
+
+.type-and-copies,
+.remarks-and-status {
+    grid-template-columns: 1fr 0.2fr;
+}
+
+select {
+    border: none;
+    height: 20px;
+}
+
+.fields {
+    width: 800px;
+}
+
+@media (max-width: 1100px) {
+    .fields {
+        width: 40vw;
+    }
+
+    .name-fields-container,
+    .email-and-number,
+    .type-and-copies {
+        grid-template-columns: 100%;
+    }
+}
+
+input {
+    height: 20px;
+    border: none;
+}
+
+.student-information-container {
+    margin-bottom: 20px;
+}

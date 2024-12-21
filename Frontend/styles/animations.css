@@ -1,0 +1,63 @@
+button,
+input,
+.request,
+.filter-button,
+.link {
+    transition: all 0.15s ease;
+}
+
+input:focus,
+select:focus {
+    outline-color: red;
+}
+
+button:hover,
+.request:hover,
+.filter-button:hover {
+    transform: scale(1.05);
+}
+
+input:hover,
+select:hover {
+    box-shadow: 0px 0px 1px 1px red;
+}
+
+.link {
+    position: relative;
+}
+
+.link:hover {
+    background-color: white;
+}
+
+.link:before,
+.link:after {
+    position: absolute;
+    content: "";
+    right: 0;
+    top: 0;
+    background-color: red;
+    transition: all 0.3s ease;
+}
+
+.link:before {
+    width: 2px;
+    height: 0%;
+}
+
+.link:after {
+    width: 0%;
+    height: 2px;
+}
+
+.link:hover:before {
+    height: 100%;
+}
+
+.link:hover:after {
+    width: 100%;
+}
+
+.link:active {
+    transform: scale(0.95);
+}

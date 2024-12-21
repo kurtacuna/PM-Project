@@ -1,0 +1,48 @@
+.section-header {
+    color: rgb(83, 1, 1);
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.add-button {
+    padding: 5px 15px;
+}
+
+.add-document-id,
+.add-document-type,
+.add-fee,
+.edit-document-id,
+.edit-fee {
+    margin: 5px 0px;
+}
+
+.left-section {
+    display: flex;
+    flex-direction: row;
+}
+
+.document-container {
+    flex: 1;
+}
+
+.right-section {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 200px;
+    padding-left: 20px;
+}
+
+.section {
+    border: 2px solid #6a2727;
+    border-radius: 5px;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.remove-document-button {
+    padding: 3px 10px;
+}

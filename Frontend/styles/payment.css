@@ -1,0 +1,72 @@
+/* .hidden-submit-button {
+    display: none;
+} */
+
+.proceed-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.proceed-button {
+    position: static;
+}
+
+.payment-modal {
+    width: 600px;
+    height: 400px;
+    padding: 50px;
+}
+
+.payment-first-step .payment-header,
+.payment-second-step .payment-header,
+.payment-third-step .payment-header {
+    font-weight: 700;
+    font-size: 20px;
+}
+  
+.modal .field-container {
+    width: 400px;
+}
+
+.payment-field-label {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.upload-button {
+    cursor: pointer;
+}
+
+.field-container-button {
+    margin-top: 30px;
+}
+
+.upload-icon-container {
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-button .upload-icon {
+    width: 25px;
+}
+
+.hide-input-file {
+    display: none;
+}
+
+.modal .close-button {
+    background-color: transparent;
+    background-image: none;
+    color: rgb(83, 1, 1);
+    font-size: 30px;
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}

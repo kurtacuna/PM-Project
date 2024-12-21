@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+
+        <link rel="stylesheet" href="../styles/fonts.css" />
+        <link rel="stylesheet" href="../styles/general.css"/>
+        <link rel="stylesheet" href="../styles/login.css">
+        <link rel="stylesheet" href="../styles/forms.css">
+        <link rel="stylesheet" href="../styles/animations.css">
+    </head>
+
+    <body>
+        <div class="top-text">
+            STUDENT
+        </div>
+        <main class="inner-container">
+            <div class="logo-and-title">
+                <div class="logo-container">
+                    <img class="logo" src="../images/Technological_University_of_the_Philippines_Seal.svg.png">
+                </div>
+                <div class="title">
+                    ONLINE DOCUMENT REQUEST SYSTEM
+                </div>
+            </div>
+
+            <form class="fields js-login-fields">
+                <input type="hidden" name="role" value="student">
+                <div class="login-fields-center">
+                    <div class="field-container username-field">
+                        <label class="field-label" for="username">
+                            Username
+                        </label>
+                        <input type="text" name="username" id="username">
+                    </div>
+                    <div class="field-container password-field">
+                        <label class="field-label" for="password">
+                            Password
+                        </label>
+                        <input type="password" name="password" id="password">
+                    </div>
+                </div>
+            </form>
+            <div class="login-button-container">
+                <button class="login-button js-login-button">
+                    <div class="bottom-left-line">
+                        LOGIN
+                    </div>
+                </button>
+            </div>
+        </main>
+
+        <script type="module" src="../scripts/common/login.js"></script>
+    </body>
+</html>

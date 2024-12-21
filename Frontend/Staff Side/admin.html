@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin</title>
+
+        <link rel="stylesheet" href="../styles/fonts.css">
+        <link rel="stylesheet" href="../styles/general.css">
+        <link rel="stylesheet" href="../styles/sidebar.css">
+        <link rel="stylesheet" href="../styles/table.css">
+        <link rel="stylesheet" href="../styles/searchAndFilter.css">
+        <link rel="stylesheet" href="../styles/forms.css">
+        <link rel="stylesheet" href="../styles/requestPreview.css">
+        <link rel="stylesheet" href="../styles/settings.css">
+        <link rel="stylesheet" href="../styles/animations.css">
+    </head>
+
+    <body>
+        <div class="sidebar-container js-sidebar-container">
+            <a>
+                <div class="logo-container">
+                    <img class="logo" src="../images/Technological_University_of_the_Philippines_Seal.svg.png">
+                </div>
+            </a>
+            <div class="links-container">
+                <div class="link js-pending-link selected">
+                    <img class="pending-icon" src="../images/icons/mdi_receipt-text-pending.png">
+                </div>
+                <div class="link js-to-receive-link">
+                    <img class="to-receive-icon" src="../images/icons/mdi_invoice-receive-outline.png">
+                </div>
+                <div class="link js-released-link">
+                    <img class="released-icon" src="../images/icons/material-symbols_data-check.png">
+                </div>
+                <div class="link js-rejected-link">
+                    <img class="rejected-icon" src="../images/icons/fluent_text-change-reject-24-filled.png">
+                </div>
+                <div class="link js-settings-link">
+                    <img class="settings-icon" src="../images/icons/material-symbols_settings.png">
+                </div>
+            </div>
+            <div class="link js-logout-link">
+                <img class="logout-icon" src="../images/icons/ic_twotone-logout.png">
+            </div>
+        </div>
+        <div class="top-text js-top-text">
+            TITLE
+        </div>
+        <main class="inner-container js-inner-container">
+            <div class="search-and-filter-container">
+                <div class="search-and-filter js-search-and-filter"></div>
+            </div>
+            <div class="table-container js-table-container">
+                <table cellspacing="0">
+                    <thead class="js-table-headers-container"></thead>
+                    <tbody class="js-requests-container"></tbody>
+                </table>
+            </div>
+            <div class="preview-container js-preview-container"></div>
+            <div class="no-requests-container js-no-requests-container"></div>
+            <div class="settings js-settings">
+            </div>
+        </main>
+
+        <script type="module" src="../scripts/staffPage/links.js"></script>
+        <script type="module" src="../scripts/staffPage/displayPreview.js"></script>
+        <script type="module" src="../scripts/staffPage/admin.js"></script>
+    </body>
+</html>

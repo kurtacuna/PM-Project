@@ -1,0 +1,7 @@
+1. install nodejs
+2. navigate to the Backend folder using vscode terminal
+3. run 'npm install' in the vscode terminal
+4. navigate to Backend/model/database.js and edit the value of the 'password' property in the file to be the password you set during MySQL installation
+5. open MySQL and create a database named 'pm_project_database'
+6. execute the script 'all.sql' in MySQL
+7. run 'npm run dev' in the vscode terminal

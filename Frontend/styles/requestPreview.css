@@ -1,0 +1,38 @@
+#remarks,
+#reason-for-rejection,
+select {
+    height: 40px;
+}
+
+.header,
+.field-label {
+    opacity: 0.5;
+}
+
+.open {
+    color: black;
+    opacity: 1;
+}
+
+.back-button-container,
+.update-button-container,
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    column-gap: 10px;
+}
+
+.completed-on,
+.released-on,
+.rejected-on {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.cost-container {
+    font-size: 20px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,32 @@
+.status-pending .status-header,
+.status-to-receive .status-header,
+.status-released .status-header,
+.status-rejected .status-header {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+}
+
+.pending,
+.to-receive,
+.released,
+.rejected {
+    font-size: 25px
+}
+
+.pending {
+    color: #ffee00;
+}
+
+.to-receive {
+    color: #d0ff00;
+}
+
+.released {
+    color: rgb(0 191 0);
+}
+
+.rejected {
+    color: red;
+}
+

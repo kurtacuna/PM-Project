@@ -1,0 +1,96 @@
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+.inner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 0px;
+    left: 20px;
+}
+
+.logo-and-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    row-gap: 10px;
+}
+
+.logo-container {
+    width: 80px;
+}
+
+.logo-container .logo {
+    width: 100%;
+}
+
+.logo-and-title .title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.login-fields-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.username-field,
+.password-field {
+    width: 400px;
+}
+
+@media (max-width: 600px) {
+    .username-field,
+    .password-field {
+        display: flex;
+        flex-direction: column;
+        width: 65vw;
+    }
+}   
+
+.login-button-container {
+    margin-top: 20px;
+}
+
+@media (max-width: 1100px) {
+    .fields {
+        position: static;
+    }
+
+    .inner-container {
+        overflow-y: unset;
+    }
+}
+
+@media (max-height: 500px) {
+    .inner-container {
+        overflow-y: scroll;
+    }
+}
+
+.top-text::before {
+    content: "";
+    position: absolute;
+    top: -21px;
+    left: 0px;
+    background-image: linear-gradient(rgb(99, 1, 1) 10%, #961f27);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.top-text {
+    background-image: linear-gradient(white 30%, #cfa4a4);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

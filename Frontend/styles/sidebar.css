@@ -1,0 +1,70 @@
+.sidebar-container {
+    background-image: linear-gradient(rgb(99, 1, 1) 10%, #961f27 90%);
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+.links-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-container,
+.links-container {
+    row-gap: 5px;
+}
+
+.link {
+    /* background-image: linear-gradient(to bottom right, rgb(173, 40, 40) 30%, #cd5a5a); */
+    background-color: rgb(185, 50, 50);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo-container,
+.link {
+    height: 100px;
+}
+
+/* .link:hover {
+    background-color: #f18989;
+} */
+
+.link:active {
+    background-color: #fdd2d2;
+}
+
+.selected {
+    background-color: white;
+}
+
+.logo {
+    width: 60px;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-icon,
+.request-icon,
+.pending-icon,
+.to-receive-icon,
+.released-icon,
+.rejected-icon,
+.logout-icon,
+.settings-icon {
+    width: 30px;
+    /* filter: invert(50%) sepia(100%) saturate(10000%) hue-rotate(0deg) brightness(60%); */
+}

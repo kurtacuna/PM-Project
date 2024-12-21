@@ -1,0 +1,130 @@
+// Overview:
+// Displays the 'REQUEST' page
+
+import { displayPayment } from "./displayPayment.js";
+import { clearSearch } from '../common/clearSearch.js';
+import { inputNumbersOnly } from "../common/inputNumbersOnly.js";
+
+export async function displayRequestPage() {
+    // Remove elements from the 'STATUS' page
+    document.querySelector('.js-table-container').innerHTML = '';
+    document.querySelector('.js-search-and-filter-container').innerHTML = '';
+    document.querySelector('.js-no-requests-container').innerText = '';
+
+    clearSearch();
+    document.title = 'Request';
+    document.querySelector('.js-top-text').innerText = 'REQUEST';
+
+    const options = await getDocumentOptions();
+    displayForms(options);
+    displayPayment(options);
+}
+
+function displayForms(options) {
+    document.querySelector('.js-forms-container').innerHTML = `
+        <form class="fields js-request-fields">
+            <div class="student-information-container">
+                <div class="header">
+                    STUDENT INFORMATION
+                </div>
+                <div class="field-container">
+                    <label class="field-label" for="student-number">
+                        Student Number
+                    </label>
+                    <input type="text" name="student-number" id="student-number" value="TEST">
+                </div>
+                <div class="name-fields-container">
+                    <div class="field-container">
+                        <label class="field-label" for="lastname">
+                            Last Name
+                        </label>
+                        <input type="text" name="lastname" id="lastname" value="TEST">
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label" for="firstname">
+                            First Name
+                        </label>
+                        <input type="text" name="firstname" id="firstname" value="TEST">
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label" for="middlename">
+                            Middle Name
+                        </label>
+                        <input type="text" name="middlename" id="middlename" value="TEST">
+                    </div>
+                </div>
+                <div class="email-and-number">
+                    <div class="field-container">
+                        <label class="field-label" for="email-address">
+                            Email Address
+                        </label>
+                        <input type="text" name="email-address" id="email-address" value="kurtlouvandrich.acuna@tup.edu.ph">
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label" for="contact-number">
+                            Contact Number
+                        </label>
+                        <input type="text" name="contact-number" id="contact-number" value="123">
+                    </div>
+                </div>
+            </div>
+            <div class="document-request-container">
+                <div class="header">
+                    DOCUMENT REQUEST
+                </div>
+                <div class="field-container">
+                    <label class="field-label" for="purpose-of-request">
+                        Purpose of Request
+                    </label>
+                    <input type="text" name="purpose-of-request" id="purpose-of-request" value="TEST">
+                </div>
+                <div class="type-and-copies">
+                    <div class="field-container">
+                        <label class="field-label" for="document-id">
+                            Type of Document
+                        </label>
+                        <select name="document-id" id="document-id">
+                            <option selected value="" style="display: none"></option>
+                            ${displayDocumentTypes(options)}
+                        </select>
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label" for="number-of-copies">
+                            Number of Copies
+                        </label>
+                        <input type="number" name="number-of-copies" id="number-of-copies" min="1" max="10" value="2">
+                    </div>
+                </div>
+                <div class="field-container">
+                    <label class="field-label" for="document-details">
+                        Document Details
+                    </label>
+                    <input type="text" name="document-details" id="document-details" value="TEST">
+                </div>
+            </div>
+        </form>
+        <div class="proceed-button-container">
+            <button class="proceed-button js-proceed-button">
+                PROCEED
+            </button> 
+        </div>
+    `;
+
+    inputNumbersOnly(document.getElementById('contact-number'));
+}
+
+function displayDocumentTypes(options) {
+    let optionsHTML = '';
+    options.forEach((document) => {
+        optionsHTML += `
+            <option value="${document.document_id}">${document.document_type}</option>
+        `;
+    });
+    return optionsHTML;
+}
+
+async function getDocumentOptions() {
+    const response = await fetch('/documents');
+    const options = await response.json();
+    return options;
+}

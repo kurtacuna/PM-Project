@@ -1,0 +1,116 @@
+.search-and-filter-container:before {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    bottom: -10px;
+    left: -30px;
+    content: "";
+    background-color: #d9bcbc;
+}
+
+.search-and-filter-container {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
+}
+
+.search-and-filter {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 30px;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 7px;
+    top: 3px;
+}
+
+.search-bar {
+    width: 300px;
+    padding-left: 30px;
+}
+
+.filter-button:active,
+.remove-filter-button:active {
+    background-color: gray !important;
+}
+
+.filter {
+    position: relative;
+}
+
+.filter-button {
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    column-gap: 5px;
+    background-color: white;
+    padding: 3px;
+    text-wrap: nowrap;
+    cursor: pointer;
+}
+
+.filter-menu-container {
+    z-index: 2;
+}
+
+.filter-menu {
+    position: absolute;
+    right: 0px;
+    background-color: white;
+    box-shadow: 5px 5px 5px 5px rgb(0, 0, 0, 0.3);
+    line-height: 25px;
+    padding: 5px;
+}
+
+.filter-option {
+    text-wrap: nowrap;
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.filter-option:hover {
+    background-color: lightgray !important;
+}
+
+.filter-option:active {
+    background-color: gray !important;
+}
+
+
+.filter-icon,
+.search-icon {
+    width: 17px;
+    height: 17px;
+}
+
+.filter-date-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.filter-date-button {
+     background-color: transparent;
+     padding: 5px 10px;
+}
+
+.filter-and-remove-button {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.remove-filter-button {
+    font-size: 20px;
+    background-color: white;
+    padding: 0px 10px;
+    cursor: pointer;
+    display: none;
+}
+
