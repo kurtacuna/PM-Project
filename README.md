@@ -1,6 +1,6 @@
 **If you don't have Git downloaded, download the latest version first
 
-Steps to download the repository:
+Steps to download the repository from GitHub:
 
 1. click the green '<> Code' button
 2. Under the 'Local' tab, under the 'HTTPS' tab, copy the url
