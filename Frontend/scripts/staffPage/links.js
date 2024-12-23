@@ -6,6 +6,7 @@ import { displayPage } from "./displayPage.js";
 import { clearSelected } from "../common/clearSelected.js";
 import { getRequests } from "../common/getRequests.js";
 import { createWebSocketConnection } from "../common/createWebSocketConnection.js";
+import { logout } from "../common/logout.js";
 
 // Display the 'PENDING' page as default
 let requests = await getRequests();
@@ -35,7 +36,7 @@ document.body.addEventListener('updateRequests', async (event) => {
 });
 
 // Define links for each page
-document.querySelector('.js-sidebar-container').addEventListener('click', (event) => {
+document.querySelector('.js-sidebar-container').addEventListener('click', async (event) => {
     if (event.target.classList.contains('js-pending-link')) {
         clearSelected();
         event.target.classList.add('selected');
@@ -53,8 +54,12 @@ document.querySelector('.js-sidebar-container').addEventListener('click', (event
         event.target.classList.add('selected');
         displayPage(requests, 'Rejected');
     } else if (event.target.classList.contains('js-logout-link')) {
-        sessionStorage.clear();
-        window.location.href = 'staffLogin.html';
+        if (await logout()) {           
+            sessionStorage.clear();
+            window.location.href = 'staffLogin.html';
+        } else {
+            serverErrorMessage();
+        }
     }
 });
 

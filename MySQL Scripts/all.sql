@@ -1,18 +1,20 @@
 CREATE TABLE staffs (
 	staff_id VARCHAR(20) PRIMARY KEY,
-    password VARCHAR(50)
+    password VARCHAR(100),
+    refresh_token TEXT
 );
 
-INSERT INTO staffs
+INSERT INTO staffs (staff_id, password)
 VALUES	('admin', '123'),
 		('staff1', '123');
         
 CREATE TABLE students(
 	student_id VARCHAR(20) PRIMARY KEY,
-    password VARCHAR(50)
+    password VARCHAR(100),
+    refresh_token TEXT
 );
 
-INSERT INTO students
+INSERT INTO students (student_id, password)
 VALUES	('student1', '123'),
 		('student2', '123');
         

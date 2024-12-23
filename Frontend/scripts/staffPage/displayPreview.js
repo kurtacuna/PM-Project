@@ -5,6 +5,7 @@ import { matchRequest } from "../common/search.js";
 import { displayPage } from "./displayPage.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 import { formatDateTime } from "../common/retrieveDate.js";
+import { refreshAccessToken } from "../common/refreshAccessToken.js";
 
 export function listenForClickOnRequest(requests) {
     document.querySelectorAll('.request').forEach((item) => {
@@ -114,7 +115,7 @@ function displayPreview(requests, item) {
 
     if (document.querySelector('.js-update-button')) {
         document.querySelector('.js-update-button').addEventListener('click', async () => {
-            if (await sendUpdate(requestId, matchingRequest.email_address) === false) {
+            if (await sendUpdate(requestId, matchingRequest.email_address)) {
                 serverErrorMessage();
             }
         });
@@ -122,7 +123,7 @@ function displayPreview(requests, item) {
     
     if (document.querySelector('.js-release-button')) {
         document.querySelector('.js-release-button').addEventListener('click', async () => {
-            if (await sendUpdate(requestId, matchingRequest.email_address) === false) {
+            if (await sendUpdate(requestId, matchingRequest.email_address)) {
                 serverErrorMessage();
             }
         });
@@ -148,19 +149,38 @@ async function sendUpdate(requestId, studentEmail) {
     
     const remarksAndStatusObject = { requestId, remarks, status, staffId, studentEmail }
     
-    let serverResponse;
-    await fetch('/requests', {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    let response = await fetch('/requests', {
         method: 'PUT',
         headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(remarksAndStatusObject)
-    }).then(response => serverResponse = response);
+    });
 
-    if (serverResponse.status === 200) {
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/requests', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(remarksAndStatusObject)
+        });
+    }
+    
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
         return true;
-    } else if (serverResponse.status === 500) {
-        return false;
     }
 }
 

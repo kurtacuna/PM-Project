@@ -5,10 +5,11 @@ import { checkAllFields } from '../common/checkFields.js';
 import { timestamp } from '../common/retrieveDate.js';
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 import { inputNumbersOnly } from '../common/inputNumbersOnly.js';
+import { refreshAccessToken } from '../common/refreshAccessToken.js';
 
 export function displayPayment(options) {
     let secondStepHTML = `
-        <div class="payment-second-step">
+        <div class="payment payment-second-step">
             <span class="payment-header">Submit GCash Payment Details</span>
             <p>Please enter the GCash reference number generated upon payment.</p>
             <form class="payment js-payment-fields">
@@ -27,7 +28,7 @@ export function displayPayment(options) {
     `;
 
     let thirdStepHTML = `
-        <div class="payment-third-step">
+        <div class="payment payment-third-step">
             <span class="payment-header">Payment Confirmation Submitted</span>
             <p>Your payment details have been submitted successfully.</p>
             <p>We are currently reviewing your payment. Please refer to the status page to track the progress of your document.</p>
@@ -60,16 +61,16 @@ export function displayPayment(options) {
                         <button class="close-button">
                             &times;
                         </button>
-                        <div class="payment-first-step">
+                        <div class="payment payment-first-step">
                             <span class="payment-header">Payment Instructions</span>
                             <p>Your form is complete! Finish the transaction using GCash by following these steps:</p>
                             <ol type="1">
                                 <li><b>Open the GCash App</b> on your mobile device.</li>
                                 <li><b>Send the payment</b> to the school registrar's GCash number: [<b>Registrar's Contact Number</b>]</li>
                                 <li>This transaction will cost <b style="font-size: 25px">${foundOption.fee * numberOfCopies}</b> PESOS. Please make sure to input this amount correctly.</li>
-                                <li><b>Save your GCash Reference Number and take a screenshot</b> of the payment confirmation.</li>
+                                <li><b>Save the transaction's reference number.</b></li>
                             </ol>
-                            <p>Before sending the payment, please double check the number and amount inputted to avoid errors. Once you have completed the payment, click <b>Proceed</b> to upload your GCash Reference Number and screenshot.</p>
+                            <p>Before sending the payment, please double check the payment amount inputted to avoid errors. Once you have completed the payment, click <b>Proceed</b> to upload the transaction's reference number.</p>
                         </div>
                         <div class="button-container">
                             <button class="proceed-button">
@@ -169,19 +170,38 @@ async function sendRequest() {
 
     console.log(formDataObject);
 
-    let serverResponse;
-    await fetch('/requests', {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    let response = await fetch('/requests', {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formDataObject)
-    }).then(response => serverResponse = response);
+    });
 
-    if (serverResponse.status === 200) {
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/requests', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObject)
+        });        
+    }
+
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
         requestForm.reset();
         return true;
-    } else if (serverResponse.status === 500) {
-        return false;
     }
 }

@@ -6,7 +6,6 @@ const db = require('../model/database.js');
 const documentOptions =  async (req, res) => {
     try {
         const [options] = await db.query('SELECT * FROM documents');
-        console.log(options);
         res.status(200).json(options);
     } catch (error) {
         console.log(error);

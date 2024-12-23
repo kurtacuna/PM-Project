@@ -4,6 +4,8 @@
 import { displayPayment } from "./displayPayment.js";
 import { clearSearch } from '../common/clearSearch.js';
 import { inputNumbersOnly } from "../common/inputNumbersOnly.js";
+import { refreshAccessToken } from "../common/refreshAccessToken.js";
+import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
 export async function displayRequestPage() {
     // Remove elements from the 'STATUS' page
@@ -124,7 +126,35 @@ function displayDocumentTypes(options) {
 }
 
 async function getDocumentOptions() {
-    const response = await fetch('/documents');
-    const options = await response.json();
-    return options;
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+
+    let response = await fetch('/documents', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`
+        }
+    });
+
+    if (response.status === 401  || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/documents', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`
+            }
+        });
+    }
+    
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
+        const options = await response.json();
+        return options;
+    } 
 }

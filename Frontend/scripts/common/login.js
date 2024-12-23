@@ -22,9 +22,11 @@ document.querySelector('.js-login-button').addEventListener('click', async () =>
         });
         
         if (response.status === 201) {
-            const { username, role } = await response.json();
-            sessionStorage.setItem('username', username)
+            const { username, role, accessToken } = await response.json();
+            sessionStorage.setItem('username', username);
             sessionStorage.setItem('role', role);
+            sessionStorage.setItem('accessToken', accessToken);
+
             if (role === 'student') {
                 window.location.href = '/student/studentPage.html';
             } else if (role === 'staff' && username === 'admin') {

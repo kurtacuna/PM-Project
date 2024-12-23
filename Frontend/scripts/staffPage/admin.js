@@ -6,6 +6,7 @@ import { serverErrorMessage } from "../common/serverErrorMessage.js";
 import { checkAllFields } from "../common/checkFields.js";
 import { styleRows } from "../common/rowStyle.js";
 import { inputNumbersOnly } from '../common/inputNumbersOnly.js';
+import { refreshAccessToken } from "../common/refreshAccessToken.js";
 
 document.querySelector('.js-settings-link').addEventListener('click', function() {
     clearSelected();
@@ -118,10 +119,37 @@ function clearInnerContainer() {
 }
 
 async function getDocumentsAvailable() {
-    const response = await fetch('/documents');
-    const documents = await response.json();
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    let response = await fetch('/documents', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`
+        }
+    });
 
-    return documents;
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/documents', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`
+            }
+        });
+    }
+
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
+        const documents = await response.json();
+
+        return documents;
+    }
 }
 
 function displayDocumentsAvailable(documents) {
@@ -146,7 +174,7 @@ function displayDocumentsAvailable(documents) {
 
 async function handleAddButtonClick(event) {
     if (checkAllFields(document.querySelector('.js-add-document-fields'))) {
-        if (await addDocumentOption(event.currentTarget.param) === false) {
+        if (await addDocumentOption(event.currentTarget.param)) {
             serverErrorMessage();
         }
     } else {
@@ -163,26 +191,46 @@ async function addDocumentOption(documents) {
         alert(`Document ID ${formDataObject['document-id']} already exists.`);
         return;
     }
-    
-    let serverResponse;
-    await fetch('/documents', {
+
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    console.log('Session Storage before:', sessionStorage);
+    let response = await fetch('/documents', {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formDataObject)
-    }).then(response => serverResponse = response);
+    });
 
-    if (serverResponse.status === 200) {
-        document.querySelector('.js-settings-link').click();
-    } else if (serverResponse.status === 500) {
-        return false;
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/documents', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObject)
+        });
     }
+
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
+        document.querySelector('.js-settings-link').click();
+    } 
 }
 
 async function handleUpdateButtonClick(event) {
     if (checkAllFields(document.querySelector('.js-edit-fee-fields'))) {
-        if (await updateDocumentFee(event.currentTarget.param) === false) {
+        if (await updateDocumentFee(event.currentTarget.param)) {
             serverErrorMessage();
         }
     } else {
@@ -200,19 +248,38 @@ async function updateDocumentFee(documents) {
         return;
     }
 
-    let serverResponse;
-    await fetch('/documents', {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    let response = await fetch('/documents', {
         method: 'PUT',
         headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formDataObject)
-    }).then(response => serverResponse = response);
+    });
 
-    if (serverResponse.status === 200) {
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/documents', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObject)
+        });
+    }
+
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
         document.querySelector('.js-settings-link').click();
-    } else if (serverResponse.status === 500) {
-        return false;
     }
 }
 
@@ -226,7 +293,7 @@ function listenForRemove() {
     document.querySelectorAll('.js-remove-document-button').forEach((button) => {
         button.addEventListener('click', async () => {
             const { documentId } = button.dataset;
-            if (await removeDocument(documentId) === false) {
+            if (await removeDocument(documentId)) {
                 serverErrorMessage();
             }; 
         });
@@ -236,20 +303,39 @@ function listenForRemove() {
 async function removeDocument(documentId) {
     const idObject = { documentId };
 
-    let serverResponse;
-    await fetch('/documents', {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    let response = await fetch('/documents', {
         method: 'DELETE',
         headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(idObject)
-    }).then(response => serverResponse = response);
+    });
 
-    if (serverResponse.status === 200) {
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/documents', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(idObject)
+        });
+    }
+
+    if (response.status === 500) {
+        serverErrorMessage();
+        return;
+    }
+
+    if (response.status === 200) {
         setTimeout(() => {
             document.querySelector('.js-settings-link').click();
         }, 50);
-    } else if (serverResponse.status === 500) {
-        return false;
     }
 }

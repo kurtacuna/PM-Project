@@ -1,6 +1,7 @@
-/* .hidden-submit-button {
-    display: none;
-} */
+.payment {
+    height: 350px;
+    overflow-y: scroll;
+}
 
 .proceed-button-container {
     display: flex;
