@@ -37,6 +37,9 @@ export function renderStudentTable(requests, filter, searchQuery) {
             tableHTML += `
                 <tr class="request request-${item.request_id}" ${inlineStyle} data-request-id="${item.request_id}">
                     <td>
+                        ${index + 1}.
+                    </td>
+                    <td>
                         ${item.request_id}
                     </td>
                     <td>

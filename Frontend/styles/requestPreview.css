@@ -15,7 +15,6 @@ select {
 }
 
 .back-button-container,
-.update-button-container,
 .buttons-container {
     display: flex;
     justify-content: center;
@@ -35,4 +34,10 @@ select {
 .cost-container {
     font-size: 20px;
     margin-bottom: 10px;
+}
+
+.update-success-message,
+.release-success-message {
+    text-align: center;
+    color: green;
 }

@@ -29,10 +29,6 @@ const refreshAccessToken = async (req, res) => {
                 `, [refreshToken, username]);
             }
             
-            console.log(username);
-            console.log(role);
-            console.log(foundUser);
-            
             if (foundUser.length === 0) {
                 res.sendStatus(403);
             } else {

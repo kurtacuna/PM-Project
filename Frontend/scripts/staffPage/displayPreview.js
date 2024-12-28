@@ -116,6 +116,8 @@ function displayPreview(requests, item) {
     if (document.querySelector('.js-update-button')) {
         document.querySelector('.js-update-button').addEventListener('click', async () => {
             if (await sendUpdate(requestId, matchingRequest.email_address)) {
+                document.querySelector('.js-update-success-message').innerText = 'Updated Successfully.';
+            } else {
                 serverErrorMessage();
             }
         });
@@ -124,6 +126,8 @@ function displayPreview(requests, item) {
     if (document.querySelector('.js-release-button')) {
         document.querySelector('.js-release-button').addEventListener('click', async () => {
             if (await sendUpdate(requestId, matchingRequest.email_address)) {
+                document.querySelector('.js-release-success-message').innerText = 'Released Successfully.';
+            } else {
                 serverErrorMessage();
             }
         });
@@ -173,9 +177,8 @@ async function sendUpdate(requestId, studentEmail) {
             body: JSON.stringify(remarksAndStatusObject)
         });
     }
-    
+
     if (response.status === 500) {
-        serverErrorMessage();
         return;
     }
 
@@ -224,19 +227,23 @@ function determineFooter(matchingRequest) {
                 </select>
             </div>
         </div>
-        <div class="update-button-container">
+        <div class="buttons-container">
+            <button class="js-go-back-button">
+                Go Back
+            </button>
             <button class="update-button js-update-button">
-                UPDATE
+                Update
             </button> 
         </div>
+        <div class="update-success-message js-update-success-message""></div>
     `;
 
     let forToReceive = `
         <div class="fields field-container">
-            <label class="field-label" for="remarks">
+            <label class="field-label open" for="remarks">
                 Remarks
             </label>
-            <input type="text" name="remarks" id="remarks" value="${remarks}" disabled>
+            <input type="text" name="remarks" id="remarks" value="${remarks}">
         </div>
         <div class="completed-on">
             <div class="text">
@@ -251,6 +258,7 @@ function determineFooter(matchingRequest) {
                 Release
             </button>
         </div>
+        <div class="release-success-message js-release-success-message"></div>
     `;
 
     let forReleased = `

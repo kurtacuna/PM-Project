@@ -19,6 +19,9 @@ export function displayStatusPage(requests) {
         <table cellspacing="0">
             <thead class="table-headers-container">
                 <tr class="table-headers">
+                    <th class="number-column">
+                        [${requests.length}]
+                    </th>
                     <th class="request-id-column">
                         Request ID
                     </th>

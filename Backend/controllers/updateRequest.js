@@ -6,6 +6,8 @@ const db = require('../model/database.js');
 const { sendEmail } = require('../middleware/sendEmail.js');
 
 const updateRequestRemarksAndStatus = async (req, res) => {
+
+    console.log('update request received');
     try {
         const { requestId, remarks, status, staffId, studentEmail } = req.body;
         const dateTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -38,6 +40,7 @@ const updateRequestRemarksAndStatus = async (req, res) => {
 
         // console.log(requestId, remarks, status, adminId, studentEmail);
         // sendEmail(requestId, remarks, status, adminId, studentEmail);
+        res.sendStatus(200);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

@@ -10,14 +10,23 @@ import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
 
 export function renderTable(requests, page, filter) {
-    renderHeaders(page);
-    renderRows(requests, page, filter);
+    const sortedRequests = [...requests].filter((item) => {
+        if (item.status === page) {
+            return true;
+        }
+    });
+    
+    renderHeaders(page, sortedRequests);
+    renderRows(sortedRequests, page, filter);
     listenForClickOnRequest(requests);
 }
 
-function renderHeaders(page) {
+function renderHeaders(page, requests) {
     let pendingHeadersHTML = `
         <tr class="table-headers">
+            <th class="number-column">
+                [${requests.length}]
+            </th>
             <th class="request-id-column">
                 Request ID
             </th>
@@ -35,6 +44,9 @@ function renderHeaders(page) {
 
     let toReceiveHeadersHTML = `
         <tr class="table-headers">
+            <th class="number-column">
+                [${requests.length}]
+            </th>
             <th class="request-id-column">
                 Request ID
             </th>
@@ -52,6 +64,9 @@ function renderHeaders(page) {
 
     let releasedHeadersHTML = `
         <tr class="table-headers">
+            <th class="number-column">
+                [${requests.length}]
+            </th>
             <th class="request-id-column">
                 Request ID
             </th>
@@ -69,6 +84,9 @@ function renderHeaders(page) {
 
     let rejectedHeadersHTML = `
         <tr class="table-headers">
+            <th class="number-column">
+                [${requests.length}]
+            </th>
             <th class="request-id-column">
                 Request ID
             </th>
@@ -98,11 +116,7 @@ function renderHeaders(page) {
 }
 
 function renderRows(requests, page, dateFilter) {
-    let tableArray = [...requests].filter((item) => {
-        if (item.status === page) {
-            return true;
-        }
-    });
+    let tableArray = requests;
 
     if (tableArray.length === 0) {
         document.querySelector('.js-requests-container').innerHTML = '';
@@ -140,6 +154,9 @@ function renderRows(requests, page, dateFilter) {
     
             tableHTML += `
                 <tr class="request request-${item.request_id}" ${inlineStyle} data-request-id="${item.request_id}">
+                    <td>
+                        ${index + 1}.
+                    </td>
                     <td>
                         ${item.request_id}
                     </td>
