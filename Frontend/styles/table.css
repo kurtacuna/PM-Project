@@ -1,3 +1,20 @@
+.table-headers-container {
+    width: 100%;
+    position: sticky;
+    top: 33px;
+    z-index: 1;
+}
+
+.table-headers-container:before {
+    background-color: #d9bcbc;
+    content: "";
+    position: absolute;
+    left: -30px;
+    right: -30px;
+    top: -70px;
+    bottom: 0px;
+}
+
 .inner-container {
     padding: 30px;
 }

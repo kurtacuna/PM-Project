@@ -17,20 +17,22 @@ export function displayStatusPage(requests) {
 
     document.querySelector('.js-table-container').innerHTML = `
         <table cellspacing="0">
-            <tr class="table-headers">
-                <th class="request-id-column">
-                    Request ID
-                </th>
-                <th class="requested-document-column">
-                    Requested Document
-                </th>
-                <th class="date-requested-column">
-                    Date Requested
-                </th>
-                <th class="status-column">
-                    Status
-                </th>
-            </tr>
+            <thead class="table-headers-container">
+                <tr class="table-headers">
+                    <th class="request-id-column">
+                        Request ID
+                    </th>
+                    <th class="requested-document-column">
+                        Requested Document
+                    </th>
+                    <th class="date-requested-column">
+                        Date Requested
+                    </th>
+                    <th class="status-column">
+                        Status
+                    </th>
+                </tr>
+            </thead>
             <tbody class="js-requests-container"></tbody>
         </table>
     `;
