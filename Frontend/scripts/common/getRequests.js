@@ -32,6 +32,8 @@ export async function getRequests() {
         });
     }
 
+    console.log(response);
+
     if (response.status === 500) {
         serverErrorMessage();
         return;
