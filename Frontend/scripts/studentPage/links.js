@@ -9,6 +9,7 @@ import { createWebSocketConnection } from "../common/createWebSocketConnection.j
 import { logout } from "../common/logout.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
+await initiateLinks();
 
 export async function initiateLinks() {
     // Display STATUS page as default

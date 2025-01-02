@@ -1,5 +1,5 @@
 import { initiateLinks } from "../../Frontend/scripts/studentPage/links.js";
-import * as getRequestsModule from "../../Frontend/scripts/common/getRequests.js";
+import { getRequests } from "../../Frontend/scripts/common/getRequests.js";
 
 describe('student links.js', () => {
     let mockRequests = [
@@ -28,17 +28,15 @@ describe('student links.js', () => {
         }
     ];
 
-    beforeEach(() => {
-        // spyOn(getRequestsModule, 'getRequests').and.returnValue(mockRequests);
+    beforeEach(async () => {
+        jest.mock('../../Frontend/scripts/common/getRequests.js', () => {
+            getRequests: jest.fn(() => {Promise.resolve(mockRequests)});
+        });
 
-        let mockFunction = jasmine.createSpy().and.returnValue(10);
-
-        mockFunction();
+        await initiateLinks();
     });
 
     it('initializes the status page as default', async () => {
-        expect(mockFunction()).toEqual(10);
-        // await initiateLinks();
-        // expect(getRequestsModule.getRequests). toHaveBeenCalled();
+        expect(jest.isMockFunction(getRequests)).toHaveBeenCalled();
     })
 });
