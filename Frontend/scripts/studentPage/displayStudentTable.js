@@ -98,7 +98,7 @@ function displayStatusOnRequestClick(requests) {
                                 DETAILS
                             </div>
                             <p>
-                                <b>Reference Number:</b> ${matchingRequest.reference_number}<br>
+                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
                                 <b>Cost:</b> ${matchingRequest.cost} PESOS
                             </p>
                             <p>This requested document is pending. Please wait while we process your request.</p>
@@ -127,7 +127,7 @@ function displayStatusOnRequestClick(requests) {
                                 DETAILS
                             </div>
                             <p>
-                                <b>Reference Number:</b> ${matchingRequest.reference_number}<br>
+                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
                                 <b>Cost:</b> ${matchingRequest.cost} PESOS
                             </p>
                             <p>This document is ready to be released. Please go to the registrar and present the reference number of your payment confirmation for validation.</p>
@@ -155,7 +155,7 @@ function displayStatusOnRequestClick(requests) {
                                 DETAILS
                             </div>
                             <p>
-                                <b>Reference Number:</b> ${matchingRequest.reference_number}<br>
+                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
                                 <b>Cost:</b> ${matchingRequest.cost} PESOS
                             </p>
                             <p>This document has been released.</p>
@@ -183,7 +183,7 @@ function displayStatusOnRequestClick(requests) {
                                 DETAILS
                             </div>
                             <p>
-                                <b>Reference Number:</b> ${matchingRequest.reference_number}<br>
+                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
                                 <b>Cost:</b> ${matchingRequest.cost} PESOS
                             </p>
                             <p>This document has been rejected.</p>

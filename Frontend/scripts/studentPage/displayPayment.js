@@ -14,7 +14,7 @@ export function displayPayment(options) {
             <p>Please enter the GCash reference number generated upon payment.</p>
             <form class="payment js-payment-fields">
                 <div class="field-container">
-                    <label class="payment-field-label" for="reference-number">Reference Number</label>
+                    <label class="payment-field-label" for="reference-number">GCASH Reference Number</label>
                     <input type="text" name="reference-number" id="reference-number">
                 </div>
                 <p>Please make sure that the reference number is correct. Once done, click <b>Upload</b> to finish the transaction.</p>
@@ -40,8 +40,10 @@ export function displayPayment(options) {
         </div>
     `;
 
+    console.log('Added overlay event listener');
+
     const overlayContainer = document.querySelector('.js-overlay-container');
-    const proceedButton = document.querySelector('.js-proceed-button');
+    const proceedButton = document.querySelector('.js-forms-proceed-button');
     
     const proceedButtonAbort = new AbortController();
     proceedButton.addEventListener('click', handleClickOnProceed, { signal: proceedButtonAbort.signal });
@@ -52,8 +54,6 @@ export function displayPayment(options) {
             const chosenOption = document.getElementById('document-id').value;
             const foundOption = options.find(document => document.document_id === chosenOption);
             const numberOfCopies = document.getElementById('number-of-copies').value;
-
-            console.log(foundOption);
 
             let firstStepHTML = `
                 <div class="overlay">
@@ -144,11 +144,15 @@ export function displayPayment(options) {
 
     const body = document.body;
     const bodyAbort = new AbortController();
+
+    console.log("Adding body event listener");
     body.addEventListener('click', removeEventListeners, { signal: bodyAbort.signal });
 
     function removeEventListeners(event) {
+        console.log("Clicked element:", event.target);
         if (event.target.classList.contains('link')) {
-            proceedButtonAbort.abort();
+            console.log("Link clicked, aborting listeners");
+            // proceedButtonAbort.abort();
             overlayContainerAbort.abort();
             bodyAbort.abort();
         }

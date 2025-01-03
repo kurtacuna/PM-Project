@@ -9,15 +9,16 @@ import { createWebSocketConnection } from "../common/createWebSocketConnection.j
 import { logout } from "../common/logout.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
-await initiateLinks();
+// mockRequests and mockOptions used for testing only
 
-export async function initiateLinks() {
-    // Display STATUS page as default
-    console.log('get requests');
-    let requests = await getRequests();
-    console.log('received requests');
-    document.querySelector('.js-top-text').innerHTML = 'STATUS';
-    displayStatusPage(requests);
+export async function initiateStudentLinks(mockRequests, mockOptions) {
+    let requests;
+
+    if (mockRequests) {
+        requests = mockRequests;
+    } else {
+        requests = await getRequests();
+    }
 
     // Update the rows with updated data 
     document.body.addEventListener('updateRequests', async (event) => {
@@ -33,15 +34,25 @@ export async function initiateLinks() {
 
     // Define links for each page
     document.querySelector('.js-sidebar-container').addEventListener('click', async (event) => {
-        if (event.target.classList.contains('js-status-link')) {
+        const linkElement = event.target.closest('.js-status-link, .js-request-link, .js-logout-link');
+
+        if (linkElement.classList.contains('js-status-link')) {
             clearSelected();
-            event.target.classList.add('selected');
+            linkElement.classList.add('selected');
             displayStatusPage(requests);
-        } else if (event.target.classList.contains('js-request-link')) {
-            clearSelected();
-            event.target.classList.add('selected');
-            displayRequestPage();
-        } else if (event.target.classList.contains('js-logout-link')) {
+        } else if (linkElement.classList.contains('js-request-link')) {
+            console.clear();
+            console.log('request clicked');
+            if (mockOptions) {
+                clearSelected();
+                linkElement.classList.add('selected');
+                displayRequestPage(mockOptions);
+            } else {
+                clearSelected();
+                linkElement.classList.add('selected');
+                displayRequestPage();
+            }
+        } else if (linkElement.classList.contains('js-logout-link')) {
             if (await logout()) {           
                 sessionStorage.clear();
                 window.location.href = 'studentLogin.html';
@@ -51,8 +62,10 @@ export async function initiateLinks() {
         }
     });
 
-    // Create a WebSocket connection for real-time updates on requests
-    const username = sessionStorage.getItem('username');
-    const role = sessionStorage.getItem('role');
-    createWebSocketConnection(username, role);
+    if (!mockRequests) {
+        // Create a WebSocket connection for real-time updates on requests
+        const username = sessionStorage.getItem('username');
+        const role = sessionStorage.getItem('role');
+        createWebSocketConnection(username, role);
+    }
 }

@@ -28,7 +28,7 @@ function displayPreview(requests, item) {
             ${matchingRequest.staff_id ? `Updated By: ${matchingRequest.staff_id}` : `` }
         </div>
         <div class="cost-container">
-            Reference Number: ${matchingRequest.reference_number} - ${matchingRequest.cost} PESOS
+            GCASH Reference Number: ${matchingRequest.reference_number} - ${matchingRequest.cost} PESOS
         </div>
         <form class="fields">
             <div class="student-information-container">

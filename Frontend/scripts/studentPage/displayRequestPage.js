@@ -7,7 +7,9 @@ import { inputNumbersOnly } from "../common/inputNumbersOnly.js";
 import { refreshAccessToken } from "../common/refreshAccessToken.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
-export async function displayRequestPage() {
+// mockOptions used for testing only
+
+export async function displayRequestPage(mockOptions) {
     // Remove elements from the 'STATUS' page
     document.querySelector('.js-table-container').innerHTML = '';
     document.querySelector('.js-search-and-filter-container').innerHTML = '';
@@ -17,9 +19,17 @@ export async function displayRequestPage() {
     document.title = 'Request';
     document.querySelector('.js-top-text').innerText = 'REQUEST';
 
-    const options = await getDocumentOptions();
+    let options;
+
+    if (mockOptions) {
+        options = mockOptions;
+    } else {
+        options = await getDocumentOptions();
+    }
+
     displayForms(options);
     displayPayment(options);
+    console.log('displayed request page');
 }
 
 function displayForms(options) {
@@ -106,7 +116,7 @@ function displayForms(options) {
             </div>
         </form>
         <div class="proceed-button-container">
-            <button class="proceed-button js-proceed-button">
+            <button class="forms-proceed-button js-forms-proceed-button">
                 PROCEED
             </button> 
         </div>
