@@ -13,7 +13,8 @@
 .add-document-type,
 .add-fee,
 .edit-document-id,
-.edit-fee {
+.edit-fee,
+.change-gcash-number {
     margin: 5px 0px;
 }
 

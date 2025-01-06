@@ -7,9 +7,9 @@ import { inputNumbersOnly } from "../common/inputNumbersOnly.js";
 import { refreshAccessToken } from "../common/refreshAccessToken.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
-// mockOptions used for testing only
+// All mocks are used for testing only
 
-export async function displayRequestPage(mockOptions) {
+export async function displayRequestPage(mockOptions, mockRegistrarGcashNumber) {
     // Remove elements from the 'STATUS' page
     document.querySelector('.js-table-container').innerHTML = '';
     document.querySelector('.js-search-and-filter-container').innerHTML = '';
@@ -28,7 +28,7 @@ export async function displayRequestPage(mockOptions) {
     }
 
     displayForms(options);
-    displayPayment(options);
+    displayPayment(options, mockRegistrarGcashNumber);
     console.log('displayed request page');
 }
 
@@ -76,7 +76,7 @@ function displayForms(options) {
                         <label class="field-label" for="contact-number">
                             Contact Number
                         </label>
-                        <input type="text" name="contact-number" id="contact-number" maxlength="20" value="123">
+                        <input type="tel" name="contact-number" id="contact-number" maxlength="20" value="123">
                     </div>
                 </div>
             </div>

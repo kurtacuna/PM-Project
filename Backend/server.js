@@ -26,6 +26,7 @@ app.use('/logout', require('./routes/logout.js'));
 app.use(verifyJWT);
 app.use('/requests', require('./routes/api/requests.js'));
 app.use('/documents', require('./routes/api/documents.js'));
+app.use('/registrar', require('./routes/api/registrar.js'));
 
 // WebSocket server
 const server = http.createServer(app);

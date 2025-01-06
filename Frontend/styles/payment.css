@@ -1,5 +1,4 @@
 .payment {
-    height: 350px;
     overflow-y: scroll;
 }
 
@@ -11,12 +10,12 @@
 }
 
 .proceed-button {
+    margin-top: 30px;
     position: static;
 }
 
 .payment-modal {
     width: 600px;
-    height: 400px;
     padding: 50px;
 }
 
@@ -70,4 +69,16 @@
     position: absolute;
     top: 0px;
     right: 10px;
+}
+
+.cost-and-gcash-number {
+    text-align: center;
+}
+
+.payment-cost {
+    font-size: 40px;
+}
+
+.payment-gcash-number {
+    font-size: 20px;
 }

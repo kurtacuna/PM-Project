@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const getRequests = require('../../controllers/getRequests.js');
-const putRequestInDB = require('../../controllers/putRequestInDB.js');
-const updateRequest = require('../../controllers/updateRequest.js');
+const requestsController = require('../../controllers/requestsController.js');
 
 router.route('/')
-    .get(getRequests.retrieveRequests)
-    .post(putRequestInDB.updateDB)
-    .put(updateRequest.updateRequestRemarksAndStatus);
-
+    .get(requestsController.getRequests)
+    .post(requestsController.postRequest)
+    .put(requestsController.putRequest);
 
 module.exports = router;

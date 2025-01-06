@@ -40,6 +40,8 @@ describe('integration test: student page', () => {
         }
     ];
 
+    let mockRegistrarGcashNumber = '09080706050'
+
     beforeEach(() => {
         document.querySelector('.student-test-container').innerHTML = `
             <div class="js-overlay-container"></div>
@@ -72,7 +74,7 @@ describe('integration test: student page', () => {
             </main>
         `;
 
-        initiateStudentLinks(mockRequests, mockOptions);
+        initiateStudentLinks(mockRequests, mockOptions, mockRegistrarGcashNumber);
         console.log('reset page');
     });
 
@@ -130,7 +132,11 @@ describe('integration test: student page', () => {
             document.querySelector('.js-request-link').click();
             document.getElementById('document-id').value = '1TOR';
             document.querySelector('.js-forms-proceed-button').click();
-            expect(document.querySelector('.js-overlay-container').innerHTML.includes('200')).toBeTruthy();
+
+            expect(document.querySelector('.payment-cost').innerText).toEqual('200');
+            console.log(document.querySelector('.payment-cost').innerText);
+            ;
+            
         });
     });
 
@@ -165,6 +171,7 @@ describe('integration test: student page', () => {
         beforeEach(() => {
             document.querySelector('.js-status-link').click();
         });
+
         it('searches for an existing request', () => {
             document.querySelector('.js-search-bar').value = '58am';
             document.querySelector('.js-search-bar').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
@@ -175,6 +182,7 @@ describe('integration test: student page', () => {
             document.querySelector('.js-search-bar').value = 'no request';
             document.querySelector('.js-search-bar').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
             expect(document.querySelectorAll('.request').length).toEqual(0);
+            console.log(document.querySelectorAll('.request'));
         });
         
     });

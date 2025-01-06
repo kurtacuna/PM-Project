@@ -7,6 +7,7 @@ import { checkAllFields } from "../common/checkFields.js";
 import { styleRows } from "../common/rowStyle.js";
 import { inputNumbersOnly } from '../common/inputNumbersOnly.js';
 import { refreshAccessToken } from "../common/refreshAccessToken.js";
+import { getRegistrarNumber } from "../common/getRegistrarNumber.js";
 
 document.querySelector('.js-settings-link').addEventListener('click', function() {
     clearSelected();
@@ -86,12 +87,29 @@ async function displaySettings() {
                             </button>
                         </div>
                     </div>
+                    <div class="section">
+                        <div class="section-header">
+                            Change GCash Number
+                        </div>
+                        <form class="js-change-gcash-number-fields">
+                            <div class="change-gcash-number">
+                                <input type="tel" name="gcash-number" id="gcash-number" placeholder="GCash Number" maxlength="20">
+                            </div>
+                            <sup><i>Current: ${await getRegistrarNumber()}</i></sup>
+                        </form>
+                        <div>
+                            <button class="js-change-gcash-number-button">
+                                Change
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     `;
 
     inputNumbersOnly(document.getElementById('fee'));
+    inputNumbersOnly(document.getElementById('gcash-number'));
     listenForRemove();
 
     const addButtonAbort = new AbortController();
@@ -102,10 +120,14 @@ async function displaySettings() {
     document.querySelector('.js-update-fee-button').addEventListener('click', handleUpdateButtonClick, { signal: updateButtonAbort.signal });
     document.querySelector('.js-update-fee-button').param = documents;
 
+    const changeButtonAbort = new AbortController();
+    document.querySelector('.js-change-gcash-number-button').addEventListener('click', handleChangeButtonClick, { signal: changeButtonAbort.signal });
+
     document.body.addEventListener('click', (event) => {
         if (event.target.classList.contains('link')) {
             addButtonAbort.abort();
             updateButtonAbort.abort();
+            changeButtonAbort.abort();
         }
     });
 }
@@ -219,8 +241,7 @@ async function addDocumentOption(documents) {
     }
 
     if (response.status === 500) {
-        serverErrorMessage();
-        return;
+        return true;
     }
 
     if (response.status === 200) {
@@ -274,8 +295,7 @@ async function updateDocumentFee(documents) {
     }
 
     if (response.status === 500) {
-        serverErrorMessage();
-        return;
+        return true;
     }
 
     if (response.status === 200) {
@@ -337,5 +357,55 @@ async function removeDocument(documentId) {
         setTimeout(() => {
             document.querySelector('.js-settings-link').click();
         }, 50);
+    }
+}
+
+async function handleChangeButtonClick() {
+    if (checkAllFields(document.querySelector('.js-change-gcash-number-fields'))) {
+        if (await changeGcashNumber()) {
+            serverErrorMessage();
+        }
+    } else {
+        alert(`Please fill in all fields in 'Change Gcash Number' when changing the GCash number`);
+    }
+}
+
+async function changeGcashNumber() {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+    const changeGcashNumberForm = document.querySelector('.js-change-gcash-number-fields');
+    const formDataObject = Object.fromEntries(new FormData(changeGcashNumberForm));
+
+    console.log(formDataObject);
+
+    let response = await fetch('/registrar/number', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formDataObject)
+    });
+
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/registrar/number', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObject)
+        });
+    }
+
+    if (response.status === 500) {
+        return true;
+    }
+
+    if (response.status === 200) {
+        document.querySelector('.js-settings-link').click();
     }
 }

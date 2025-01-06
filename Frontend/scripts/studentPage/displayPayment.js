@@ -6,8 +6,11 @@ import { timestamp } from '../common/retrieveDate.js';
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 import { inputNumbersOnly } from '../common/inputNumbersOnly.js';
 import { refreshAccessToken } from '../common/refreshAccessToken.js';
+import { getRegistrarNumber } from '../common/getRegistrarNumber.js';
 
-export function displayPayment(options) {
+// All mocks are used for testing only
+
+export function displayPayment(options, mockRegistrarGcashNumber) {
     let secondStepHTML = `
         <div class="payment payment-second-step">
             <span class="payment-header">Submit GCash Payment Details</span>
@@ -48,12 +51,38 @@ export function displayPayment(options) {
     const proceedButtonAbort = new AbortController();
     proceedButton.addEventListener('click', handleClickOnProceed, { signal: proceedButtonAbort.signal });
 
-    function handleClickOnProceed() {
+    async function handleClickOnProceed() {
         if (checkAllFields(document.querySelector('.js-request-fields'))) {
             proceedButtonAbort.abort();
             const chosenOption = document.getElementById('document-id').value;
             const foundOption = options.find(document => document.document_id === chosenOption);
             const numberOfCopies = document.getElementById('number-of-copies').value;
+
+            // let firstStepHTML = `
+            //     <div class="overlay">
+            //         <div class="modal payment-modal">
+            //             <button class="close-button">
+            //                 &times;
+            //             </button>
+            //             <div class="payment payment-first-step">
+            //                 <span class="payment-header">Payment Instructions</span>
+            //                 <p>Your form is complete! Finish the transaction using GCash by following these steps:</p>
+            //                 <ol type="1">
+            //                     <li><b>Open the GCash App</b> on your mobile device.</li>
+            //                     <li><b>Send the payment</b> to the school registrar's GCash number: ${await getRegistrarNumber()}</li>
+            //                     <li>This transaction will cost <b style="font-size: 25px">${foundOption.fee * numberOfCopies}</b> PESOS. Please make sure to input this amount correctly.</li>
+            //                     <li><b>Save the transaction's reference number.</b></li>
+            //                 </ol>
+            //                 <p>Before sending the payment, please double check the payment amount inputted to avoid errors. Once you have completed the payment, click <b>Proceed</b> to upload the transaction's reference number.</p>
+            //             </div>
+            //             <div class="button-container">
+            //                 <button class="proceed-button">
+            //                     Proceed
+            //                 </button>
+            //             </div>
+            //         </div>
+            //     </div>
+            // `;
 
             let firstStepHTML = `
                 <div class="overlay">
@@ -66,11 +95,14 @@ export function displayPayment(options) {
                             <p>Your form is complete! Finish the transaction using GCash by following these steps:</p>
                             <ol type="1">
                                 <li><b>Open the GCash App</b> on your mobile device.</li>
-                                <li><b>Send the payment</b> to the school registrar's GCash number: [<b>Registrar's Contact Number</b>]</li>
-                                <li>This transaction will cost <b style="font-size: 25px">${foundOption.fee * numberOfCopies}</b> PESOS. Please make sure to input this amount correctly.</li>
+                                <li><b>Send the payment</b> to the school registrar's GCash number.</li>
+                                <li><b>Input the correct amount</b> indicated below.</li>
                                 <li><b>Save the transaction's reference number.</b></li>
                             </ol>
                             <p>Before sending the payment, please double check the payment amount inputted to avoid errors. Once you have completed the payment, click <b>Proceed</b> to upload the transaction's reference number.</p>
+                        </div>
+                        <div class="cost-and-gcash-number">
+                            Cost: <b class="payment-cost">${foundOption.fee * numberOfCopies}</b> PESOS <br> Registrar GCash Number: <b class="payment-gcash-number">${mockRegistrarGcashNumber? mockRegistrarGcashNumber: await getRegistrarNumber()}</b>
                         </div>
                         <div class="button-container">
                             <button class="proceed-button">

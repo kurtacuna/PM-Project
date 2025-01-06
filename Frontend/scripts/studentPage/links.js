@@ -9,9 +9,9 @@ import { createWebSocketConnection } from "../common/createWebSocketConnection.j
 import { logout } from "../common/logout.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 
-// mockRequests and mockOptions used for testing only
+// All mocks are used for testing only
 
-export async function initiateStudentLinks(mockRequests, mockOptions) {
+export async function initiateStudentLinks(mockRequests, mockOptions, mockRegistrarGcashNumber) {
     let requests;
 
     if (mockRequests) {
@@ -46,7 +46,7 @@ export async function initiateStudentLinks(mockRequests, mockOptions) {
             if (mockOptions) {
                 clearSelected();
                 linkElement.classList.add('selected');
-                displayRequestPage(mockOptions);
+                displayRequestPage(mockOptions, mockRegistrarGcashNumber);
             } else {
                 clearSelected();
                 linkElement.classList.add('selected');

@@ -1,3 +1,10 @@
+CREATE TABLE registrar (
+	gcash_number VARCHAR(20)
+);
+
+INSERT INTO registrar
+VALUES ('09080706050');
+
 CREATE TABLE staffs (
 	staff_id VARCHAR(20) PRIMARY KEY,
     password VARCHAR(100),
