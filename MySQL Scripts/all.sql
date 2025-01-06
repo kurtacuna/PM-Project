@@ -53,7 +53,7 @@ CREATE TABLE request_details(
     firstname VARCHAR(100),
     middlename VARCHAR(50),
     email_address VARCHAR(50),
-    contact_number INT,
+    contact_number VARCHAR(20),
     purpose_of_request VARCHAR(255),
     document_type VARCHAR(100),
     number_of_copies INT,

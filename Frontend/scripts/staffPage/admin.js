@@ -51,13 +51,13 @@ async function displaySettings() {
                         </div>
                         <form class="js-add-document-fields">
                             <div class="add-document-id">
-                            <input type="text" name="document-id" placeholder="Document ID" value="test">
+                            <input type="text" name="document-id" placeholder="Document ID" maxlength="20" value="test">
                             </div>
                             <div class="add-document-type">
-                                <input type="text" name="document-type" placeholder="Document Type" value="test">
+                                <input type="text" name="document-type" placeholder="Document Type" maxlength="100" value="test">
                             </div>
                             <div class="add-fee">
-                                <input type="text" name="fee" id ="fee" placeholder="Fee" value="123">
+                                <input type="text" name="fee" id ="fee" placeholder="Fee" maxlength="5" value="123">
                             </div>
                             <sup><i>Max of 5 digits</i></sup>
                         </form>
@@ -73,10 +73,10 @@ async function displaySettings() {
                         </div>
                         <form class="js-edit-fee-fields">
                             <div class="edit-document-id">
-                                <input type="text" name="document-id" placeholder="Document ID">
+                                <input type="text" name="document-id" placeholder="Document ID" maxlength="20">
                             </div>
                             <div class="edit-fee">
-                                <input type="text" name="fee" id="fee" placeholder="Fee">
+                                <input type="text" name="fee" id="fee" placeholder="Fee" maxlength="5">
                             </div>
                             <sup><i>Max of 5 digits</i></sup>
                         </form>

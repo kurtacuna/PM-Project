@@ -43,26 +43,26 @@ function displayForms(options) {
                     <label class="field-label" for="student-number">
                         Student Number
                     </label>
-                    <input type="text" name="student-number" id="student-number" value="TEST">
+                    <input type="text" name="student-number" id="student-number" maxlength="20" value="TEST">
                 </div>
                 <div class="name-fields-container">
                     <div class="field-container">
                         <label class="field-label" for="lastname">
                             Last Name
                         </label>
-                        <input type="text" name="lastname" id="lastname" value="TEST">
+                        <input type="text" name="lastname" id="lastname" maxlength="50" value="TEST">
                     </div>
                     <div class="field-container">
                         <label class="field-label" for="firstname">
                             First Name
                         </label>
-                        <input type="text" name="firstname" id="firstname" value="TEST">
+                        <input type="text" name="firstname" id="firstname" maxlength="100" value="TEST">
                     </div>
                     <div class="field-container">
                         <label class="field-label" for="middlename">
                             Middle Name
                         </label>
-                        <input type="text" name="middlename" id="middlename" value="TEST">
+                        <input type="text" name="middlename" id="middlename" maxlength="50" value="TEST">
                     </div>
                 </div>
                 <div class="email-and-number">
@@ -70,13 +70,13 @@ function displayForms(options) {
                         <label class="field-label" for="email-address">
                             Email Address
                         </label>
-                        <input type="text" name="email-address" id="email-address" value="kurtlouvandrich.acuna@tup.edu.ph">
+                        <input type="text" name="email-address" id="email-address" maxlength="50" value="kurtlouvandrich.acuna@tup.edu.ph">
                     </div>
                     <div class="field-container">
                         <label class="field-label" for="contact-number">
                             Contact Number
                         </label>
-                        <input type="text" name="contact-number" id="contact-number" value="123">
+                        <input type="text" name="contact-number" id="contact-number" maxlength="20" value="123">
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@ function displayForms(options) {
                     <label class="field-label" for="purpose-of-request">
                         Purpose of Request
                     </label>
-                    <input type="text" name="purpose-of-request" id="purpose-of-request" value="TEST">
+                    <input type="text" name="purpose-of-request" id="purpose-of-request" maxlength="255" value="TEST">
                 </div>
                 <div class="type-and-copies">
                     <div class="field-container">
@@ -104,14 +104,14 @@ function displayForms(options) {
                         <label class="field-label" for="number-of-copies">
                             Number of Copies
                         </label>
-                        <input type="number" name="number-of-copies" id="number-of-copies" min="1" max="10" value="2">
+                        <input type="number" name="number-of-copies" id="number-of-copies" min="1" max="50" value="2">
                     </div>
                 </div>
                 <div class="field-container">
                     <label class="field-label" for="document-details">
                         Document Details
                     </label>
-                    <input type="text" name="document-details" id="document-details" value="TEST">
+                    <input type="text" name="document-details" id="document-details" maxlength="255" value="TEST">
                 </div>
             </div>
         </form>

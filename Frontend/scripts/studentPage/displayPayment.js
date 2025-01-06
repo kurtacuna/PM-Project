@@ -15,7 +15,7 @@ export function displayPayment(options) {
             <form class="payment js-payment-fields">
                 <div class="field-container">
                     <label class="payment-field-label" for="reference-number">GCASH Reference Number</label>
-                    <input type="text" name="reference-number" id="reference-number">
+                    <input type="text" name="reference-number" id="reference-number" maxlength="20">
                 </div>
                 <p>Please make sure that the reference number is correct. Once done, click <b>Upload</b> to finish the transaction.</p>
             </form>

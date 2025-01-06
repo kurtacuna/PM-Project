@@ -213,7 +213,7 @@ function determineFooter(matchingRequest) {
                 <label class="field-label open" for="remarks">
                     Add Remarks
                 </label>
-                <input type="text" name="remarks" id="remarks" value="${remarks}">
+                <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
             </div>
             <div class="field-container">
                 <label class="field-label open" for="status">
@@ -243,7 +243,7 @@ function determineFooter(matchingRequest) {
             <label class="field-label open" for="remarks">
                 Remarks
             </label>
-            <input type="text" name="remarks" id="remarks" value="${remarks}">
+            <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
         </div>
         <div class="completed-on">
             <div class="text">
