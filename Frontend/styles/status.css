@@ -1,7 +1,4 @@
-.status-pending .status-header,
-.status-to-receive .status-header,
-.status-released .status-header,
-.status-rejected .status-header {
+.status .status-header {
     font-weight: 700;
     font-size: 20px;
     text-align: center;

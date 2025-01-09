@@ -13,14 +13,32 @@ import { getRegistrarNumber } from '../common/getRegistrarNumber.js';
 export function displayPayment(options, mockRegistrarGcashNumber) {
     let secondStepHTML = `
         <div class="payment payment-second-step">
-            <span class="payment-header">Submit GCash Payment Details</span>
+            <span class="payment-header">Submit Transaction Details</span>
             <p>Please enter the GCash reference number generated upon payment.</p>
             <form class="payment js-payment-fields">
                 <div class="field-container">
                     <label class="payment-field-label" for="reference-number">GCASH Reference Number</label>
-                    <input type="text" name="reference-number" id="reference-number" maxlength="20">
+                    <input type="text" name="reference-number" id="reference-number" maxlength="20" required>
                 </div>
-                <p>Please make sure that the reference number is correct. Once done, click <b>Upload</b> to finish the transaction.</p>
+                <div class="field-container receiving-option-container js-receiving-option-container">
+                    <label class="payment-field-label">Receiving Option</label>
+                    <div class="option">
+                        <div class="radio-label">
+                            <input type="radio" name="receiving-option" id="pick-up" value="Pick Up">
+                            <label for="pick-up">Pick Up</label>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="radio-label">
+                            <input type="radio" name="receiving-option" id="delivery" value="Delivery">
+                            <label for="delivery">Delivery</label>
+                        </div>
+                        <div class="delivery-address-container js-delivery-address-container"></div>
+                    </div>
+                    <input type="radio" name="receiving-option" value ="" checked style="display: none">
+                    <div class="js-approval-input-container"></div>
+                </div>
+                <p>Please make sure that the reference number and delivery address are correct. Once done, click <b>Upload</b> to finish the transaction.</p>
             </form>
         </div>
         <div class="button-container">
@@ -32,7 +50,7 @@ export function displayPayment(options, mockRegistrarGcashNumber) {
 
     let thirdStepHTML = `
         <div class="payment payment-third-step">
-            <span class="payment-header">Payment Confirmation Submitted</span>
+            <span class="payment-header">Transaction Completed</span>
             <p>Your payment details have been submitted successfully.</p>
             <p>We are currently reviewing your payment. Please refer to the status page to track the progress of your document.</p>
         </div>
@@ -57,32 +75,6 @@ export function displayPayment(options, mockRegistrarGcashNumber) {
             const chosenOption = document.getElementById('document-id').value;
             const foundOption = options.find(document => document.document_id === chosenOption);
             const numberOfCopies = document.getElementById('number-of-copies').value;
-
-            // let firstStepHTML = `
-            //     <div class="overlay">
-            //         <div class="modal payment-modal">
-            //             <button class="close-button">
-            //                 &times;
-            //             </button>
-            //             <div class="payment payment-first-step">
-            //                 <span class="payment-header">Payment Instructions</span>
-            //                 <p>Your form is complete! Finish the transaction using GCash by following these steps:</p>
-            //                 <ol type="1">
-            //                     <li><b>Open the GCash App</b> on your mobile device.</li>
-            //                     <li><b>Send the payment</b> to the school registrar's GCash number: ${await getRegistrarNumber()}</li>
-            //                     <li>This transaction will cost <b style="font-size: 25px">${foundOption.fee * numberOfCopies}</b> PESOS. Please make sure to input this amount correctly.</li>
-            //                     <li><b>Save the transaction's reference number.</b></li>
-            //                 </ol>
-            //                 <p>Before sending the payment, please double check the payment amount inputted to avoid errors. Once you have completed the payment, click <b>Proceed</b> to upload the transaction's reference number.</p>
-            //             </div>
-            //             <div class="button-container">
-            //                 <button class="proceed-button">
-            //                     Proceed
-            //                 </button>
-            //             </div>
-            //         </div>
-            //     </div>
-            // `;
 
             let firstStepHTML = `
                 <div class="overlay">
@@ -150,6 +142,11 @@ export function displayPayment(options, mockRegistrarGcashNumber) {
             `;
 
             inputNumbersOnly(document.getElementById('reference-number'));
+            document.querySelector('.js-receiving-option-container').addEventListener('click', (event) => {
+                if (event.target.type === 'radio') {
+                    checkIfDelivery();
+                }
+            });
         }
 
         if (event.target.classList.contains('upload-button')) {
@@ -169,7 +166,7 @@ export function displayPayment(options, mockRegistrarGcashNumber) {
                     serverErrorMessage();
                 }
             } else {
-                alert('Please input the reference number.');
+                alert('Please fill in all fields.');
             }
         }
     }
@@ -181,7 +178,6 @@ export function displayPayment(options, mockRegistrarGcashNumber) {
     body.addEventListener('click', removeEventListeners, { signal: bodyAbort.signal });
 
     function removeEventListeners(event) {
-        console.log("Clicked element:", event.target);
         if (event.target.classList.contains('link')) {
             console.log("Link clicked, aborting listeners");
             // proceedButtonAbort.abort();
@@ -240,4 +236,28 @@ async function sendRequest() {
         requestForm.reset();
         return true;
     }
+}
+
+function checkIfDelivery() {
+    const receivingOptionRadioButtons = document.getElementsByName('receiving-option');
+    const deliveryAddressInput = document.querySelector('.js-delivery-address-container');
+    const approvalInputContainer = document.querySelector('.js-approval-input-container');
+
+    receivingOptionRadioButtons.forEach((button) => {
+        if (button.checked && button.value === 'Pick Up') {
+            deliveryAddressInput.innerHTML = '';
+            approvalInputContainer.innerHTML = `
+                <input type="text" name="approval" id="approval" value="Yes" style="display: none;">
+            `;
+        } else if (button.checked && button.value === 'Delivery') {
+            if (deliveryAddressInput.innerHTML === '') {
+                deliveryAddressInput.innerHTML = `
+                    <input type="text" name="delivery-address" id="delivery-address" maxlength="255" placeholder="Street Address, Barangay, City/Municipality, Postal Code">
+                `;
+                approvalInputContainer.innerHTML = `
+                    <input type="text" name="approval" id="approval" value="No" style="display: none;">
+                `;
+            }
+        }
+    });
 }

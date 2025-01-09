@@ -7,4 +7,6 @@ router.route('/')
     .post(requestsController.postRequest)
     .put(requestsController.putRequest);
 
+router.put('/approve', requestsController.approveFee)
+
 module.exports = router;

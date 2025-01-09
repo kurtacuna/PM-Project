@@ -5,6 +5,8 @@ import { filterArray } from '../common/filter.js';
 import { search, matchRequest } from '../common/search.js';
 import { styleRows } from '../common/rowStyle.js';
 import { formatDateTime, formatDateSameLine } from '../common/retrieveDate.js';
+import { refreshAccessToken } from '../common/refreshAccessToken.js';
+import { serverErrorMessage } from '../common/serverErrorMessage.js';
 
 export function renderStudentTable(requests, filter, searchQuery) {
     let tableArray = requests;
@@ -81,139 +83,61 @@ function displayStatusOnRequestClick(requests) {
             const matchingRequest = matchRequest(requests, requestId);
             console.log(matchingRequest);
         
-            let statusHTML = '';
+            let status = '';
+            let date = '';
 
             if (matchingRequest.status === 'Pending') {
-                statusHTML = `
-                    <div class="status-pending">
-                        <div class="status-header">
-                            STATUS:
-                            <span class="pending">PENDING</span>
-                            <div class="admin-id" style="font-weight: normal; font-size: 15px">
-                                ${displayStaff(matchingRequest.staff_id)}
-                            </div>
-                        </div>
-                        <div class="modal-inner-container">
-                            <div class="modal-inner-header">
-                                DETAILS
-                            </div>
-                            <p>
-                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
-                                <b>Cost:</b> ${matchingRequest.cost} PESOS
-                            </p>
-                            <p>This requested document is pending. Please wait while we process your request.</p>
-                            <p class="remarks">
-                                ${displayRemarks(matchingRequest.remarks)}
-                            </p>
-                        </div>
-                    </div>
-                `;
+                status = 'PENDING'
+                date = '';
             } else if (matchingRequest.status === 'To Receive') {
-                statusHTML = `
-                    <div class="status-to-receive">
-                        <div class="status-header">
-                            STATUS:
-                            <span class="to-receive">TO RECEIVE</span>
-                            <div class="date-completed" style="font-weight: normal; font-size: 15px;">
-                                ${formatDateSameLine(matchingRequest.date_completed)}
-                            </div>
-                            <div class="admin-id" style="font-weight: normal; font-size: 15px">
-                                ${displayStaff(matchingRequest.staff_id)}
-                            </div>
-                        </div>
-
-                        <div class="modal-inner-container">
-                            <div class="modal-inner-header">
-                                DETAILS
-                            </div>
-                            <p>
-                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
-                                <b>Cost:</b> ${matchingRequest.cost} PESOS
-                            </p>
-                            <p>This document is ready to be released. Please go to the registrar and present the reference number of your payment confirmation for validation.</p>
-                            <p class="remarks">
-                                ${displayRemarks(matchingRequest.remarks)}
-                            </p>
-                        </div>
-                    </div>
-                `;
+                status = 'TO RECEIVE';
+                date = matchingRequest.date_completed;
             } else if (matchingRequest.status === 'Released') {
-                statusHTML = `
-                    <div class="status-released">
-                        <div class="status-header">
-                            STATUS:
-                            <span class="released">RELEASED</span>
-                            <div class="date-released" style="font-weight: normal; font-size: 15px;">
-                                ${formatDateSameLine(matchingRequest.date_released)}
-                            </div>
-                            <div class="admin-id" style="font-weight: normal; font-size: 15px">
-                                ${displayStaff(matchingRequest.staff_id)}
-                            </div>
-                        </div>
-                        <div class="modal-inner-container">
-                            <div class="modal-inner-header">
-                                DETAILS
-                            </div>
-                            <p>
-                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
-                                <b>Cost:</b> ${matchingRequest.cost} PESOS
-                            </p>
-                            <p>This document has been released.</p>
-                            <p class="remarks">
-                                ${displayRemarks(matchingRequest.remarks)}
-                            </p>
-                        </div>
-                    </div>
-                `;
+                status = 'RELEASED';
+                date = matchingRequest.date_released;
             } else if (matchingRequest.status === 'Rejected') {
-                statusHTML = `
-                    <div class="status-rejected">
-                        <div class="status-header">
-                            STATUS:
-                            <span class="rejected">REJECTED</span>
-                            <div class="date-rejected" style="font-weight: normal; font-size: 15px;">
-                                ${formatDateSameLine(matchingRequest.date_rejected)}
-                            </div>
-                            <div class="admin-id" style="font-weight: normal; font-size: 15px">
-                                ${displayStaff(matchingRequest.staff_id)}
-                            </div>
-                        </div>
-                        <div class="modal-inner-container">
-                            <div class="modal-inner-header">
-                                DETAILS
-                            </div>
-                            <p>
-                                <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
-                                <b>Cost:</b> ${matchingRequest.cost} PESOS
-                            </p>
-                            <p>This document has been rejected.</p>
-                            <p class="remarks">
-                                ${displayRemarks(matchingRequest.remarks)}
-                            </p>
-                        </div>
-                    </div>
-                `;
+                status = 'REJECTED';
+                date = matchingRequest.date_rejected;
             }
 
-            let statusOverlayHTML = `
+            const statusHTML = showStatusDetails(
+                status,
+                date,
+                matchingRequest
+            );
+
+            const statusOverlayHTML = `
                 <div class="overlay js-overlay">
                     <div class="modal status-modal">
                         ${statusHTML}
-                        <button class="button-container js-close-button">
-                            Close
-                        </button>
+                        <div class="buttons-container">
+                            <button class="button-container js-close-button">
+                                Close
+                            </button>
+                            ${matchingRequest.status === 'Pending' && matchingRequest.approval === 'No' && matchingRequest.delivery_fee ? `
+                                <button class="js-approve-button">
+                                    Approve
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
             `;
 
+            
             const overlayContainer = document.querySelector('.js-overlay-container');
-
             overlayContainer.innerHTML = statusOverlayHTML;
 
-            const overlay = document.querySelector('.js-overlay');
-
-            overlay.addEventListener('click', (event) => {
-                if (event.target.classList.contains('js-close-button')) {
+            document.querySelector('.js-overlay').addEventListener('click', async (event) => {
+                if (event.target.classList.contains('js-approve-button')) {
+                    console.log('approve');
+                    if (await approveFee(matchingRequest.request_id)) {
+                        document.querySelector('.js-approve-button').innerText = 'Approved';
+                        document.querySelector('.js-approve-button').style.backgroundImage = 'radial-gradient(circle at center, #2ca018 30%, rgb(19 117 0))';
+                    } else {
+                        serverErrorMessage();
+                    }
+                } else if (event.target.classList.contains('js-close-button')) {
                     overlayContainer.innerHTML = '';
                 } else if (event.target.classList.contains('js-overlay')) {
                     overlayContainer.innerHTML = '';
@@ -241,5 +165,96 @@ function displayRemarks(remarks) {
         `;
     } else {
         return '';
+    }
+}
+
+function showStatusDetails(status, date, matchingRequest) {
+    return `
+        <div class="status">
+            <div class="status-header js-status-header">
+                STATUS:
+                <span class="${status.toLowerCase()}">${status}</span>
+                <div class="delivery-fee">
+                    ${matchingRequest.receiving_option === 'Delivery' && matchingRequest.delivery_fee ? `
+                        <b>${matchingRequest.approval === 'Yes' ? '(Approved)' : ''} Delivery Fee:</b> ${matchingRequest.delivery_fee} PESOS
+                    ` : ''}
+                </div>
+                <div class="date">
+                    ${date ? formatDateSameLine(date) : ''}
+                </div>
+                <div class="admin-id">
+                    ${displayStaff(matchingRequest.staff_id)}
+                </div>
+            </div>
+            <div class="modal-inner-container">
+                <div class="modal-inner-header">
+                    DETAILS
+                </div>
+                <p>
+                    <b>Request ID:</b> ${matchingRequest.request_id}
+                    <p>
+                        <b>GCASH Reference Number:</b> ${matchingRequest.reference_number}<br>
+                        <b>Cost:</b> ${matchingRequest.cost} PESOS
+                    </p>
+                    <p>
+                        <b>Receiving Option:</b> ${matchingRequest.receiving_option}<br>
+                        ${showDeliveryLink(matchingRequest)}
+                    </p>
+                    <p class="remarks">
+                        ${displayRemarks(matchingRequest.remarks)}
+                    </p>
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function showDeliveryLink(matchingRequest) {
+    if (matchingRequest.receiving_option === 'Delivery' && matchingRequest.share_link) {
+        if (!matchingRequest.delivery_fee) {
+            return '';
+        } else {
+            return `
+                <b>Track Delivery Link:</b> ${matchingRequest.share_link}
+            `;
+        }
+    } else {
+        return '';
+    }
+}
+
+async function approveFee(requestId) {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+
+    let response = await fetch('/requests/approve', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ requestId })
+    });
+
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/requests/approve', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ requestId })
+        });
+    }
+
+    if (response.status === 500) {
+        return;
+    }
+
+    if (response.status === 200) {
+        return true;
     }
 }

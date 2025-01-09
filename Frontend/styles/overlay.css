@@ -13,10 +13,7 @@
     z-index: 101;
 }
 
-.status-pending,
-.status-to-receive,
-.status-released,
-.status-rejected {
+.status {
     width: 100%;
 }
 
@@ -47,6 +44,17 @@
     text-align: center;
     font-weight: 700;
     font-size: 20px;
+}
+
+.date,
+.admin-id {
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.delivery-fee {
+    font-weight: normal;
+    font-size: 17px;
 }
 
 @media (max-height: 400px) {

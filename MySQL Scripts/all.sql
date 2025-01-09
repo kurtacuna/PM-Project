@@ -1,3 +1,6 @@
+-- DROP DATABASE pm_project_database;
+-- CREATE DATABASE pm_project_database;
+
 CREATE TABLE registrar (
 	gcash_number VARCHAR(20)
 );
@@ -53,7 +56,17 @@ CREATE TABLE requests(
     reference_number VARCHAR(20)
 );
 
-CREATE TABLE request_details(
+CREATE TABLE request_receiving_method (
+	request_id VARCHAR(50) PRIMARY KEY,
+    FOREIGN KEY (request_id) REFERENCES requests(request_id),
+	receiving_option VARCHAR(20),
+    delivery_address VARCHAR(255),
+    delivery_fee DECIMAL(7, 2),
+    share_link VARCHAR(255),
+    approval VARCHAR(5)
+);
+
+CREATE TABLE request_details (
 	request_id VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (request_id) REFERENCES requests(request_id),
     lastname VARCHAR(50),
@@ -85,6 +98,11 @@ VIEW `request_with_details` AS
         `requests`.`staff_id` AS `staff_id`,
         `requests`.`remarks` AS `remarks`,
         `requests`.`reference_number` AS `reference_number`,
+        `request_receiving_method`.`receiving_option` AS `receiving_option`,
+        `request_receiving_method`.`delivery_address` AS `delivery_address`,
+        `request_receiving_method`.`share_link` AS `share_link`,
+        `request_receiving_method`.`delivery_fee` AS `delivery_fee`,
+        `request_receiving_method`.`approval` AS `approval`,
         `request_details`.`lastname` AS `lastname`,
         `request_details`.`firstname` AS `firstname`,
         `request_details`.`middlename` AS `middlename`,
@@ -95,7 +113,8 @@ VIEW `request_with_details` AS
         `request_details`.`number_of_copies` AS `number_of_copies`,
         `request_details`.`document_details` AS `document_details`
     FROM
-        (`requests`
-        JOIN `request_details` ON ((`requests`.`request_id` = `request_details`.`request_id`)));
+        `requests`
+        JOIN `request_details` ON `requests`.`request_id` = `request_details`.`request_id`
+        JOIN `request_receiving_method` ON `requests`.`request_id` = `request_receiving_method`.`request_id`;
         
 	SELECT * FROM request_with_details;

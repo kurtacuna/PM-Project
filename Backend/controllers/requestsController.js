@@ -33,6 +33,8 @@ const getRequests = async (req, res) => {
 // Inserts a request into the database
 const postRequest = async (req, res) => {
     try {
+        console.log(req.body);
+
         const { username } = req.body;
         const requestID = username + req.body.timestamp;
 
@@ -49,7 +51,10 @@ const postRequest = async (req, res) => {
             'student-id': username,
             'document-id': req.body['document-id'],
             'fee': fee,
-            'reference-number': req.body['reference-number']
+            'reference-number': req.body['reference-number'],
+            'receiving-option': req.body['receiving-option'],
+            'delivery-address': req.body['delivery-address'] || '',
+            'approval': req.body.approval
         }
 
         const newRequestDetails = {
@@ -61,7 +66,13 @@ const postRequest = async (req, res) => {
         await db.query(`
             INSERT INTO requests (request_id, student_id, document_id, cost, reference_number)
             VALUES (?, ?, ?, ?, ?)
-        `, [newRequest['request-id'], newRequest['student-id'], newRequest['document-id'], newRequest.fee, newRequest['reference-number']]);
+        `, [
+            newRequest['request-id'], 
+            newRequest['student-id'], 
+            newRequest['document-id'], 
+            newRequest.fee, 
+            newRequest['reference-number']
+        ]);
 
         await db.query(`
             INSERT INTO request_details
@@ -79,6 +90,16 @@ const postRequest = async (req, res) => {
             newRequestDetails['document-details']
         ]);
 
+        await db.query(`
+            INSERT INTO request_receiving_method (request_id, receiving_option, delivery_address, approval)
+            VALUES (?, ?, ?, ?)    
+        `, [
+            newRequest['request-id'], 
+            newRequest['receiving-option'], 
+            newRequest['delivery-address'],
+            newRequest.approval
+        ]);
+
         console.log('Request received');
         res.sendStatus(200);
     } catch (error) {
@@ -94,28 +115,36 @@ const { sendEmail } = require('../middleware/sendEmail.js');
 const putRequest = async (req, res) => {
     console.log('update request received');
     try {
-        const { requestId, remarks, status, staffId, studentEmail } = req.body;
+        console.log(req.body);
+
+        const { requestId, studentEmail, staffId } = req.body;
         const dateTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
     
         await db.query(`
             UPDATE requests
             SET status = ?, remarks = ?, staff_id = ?
             WHERE request_id = ?    
-        `, [status, remarks, staffId, requestId]);
+        `, [req.body.status, req.body.remarks, staffId, requestId]);
+
+        await db.query(`
+            UPDATE request_receiving_method
+            SET delivery_fee = ?, share_link = ?
+            WHERE request_id = ?    
+        `, [req.body['delivery-fee'], req.body['share-link'], requestId]);
     
-        if (status === 'To Receive') {
+        if (req.body.status === 'To Receive') {
             await db.query(`
                 UPDATE requests
                 SET date_completed = ?
                 WHERE request_id = ?    
             `, [dateTime, requestId]);
-        } else if (status === 'Released') {
+        } else if (req.body.status === 'Released') {
             await db.query(`
                 UPDATE requests
                 SET date_released = ?
                 WHERE request_id = ?    
             `, [dateTime, requestId]);
-        } else if (status === 'Rejected') {
+        } else if (req.body.status === 'Rejected') {
             await db.query(`
                 UPDATE requests
                 SET date_rejected = ?
@@ -123,8 +152,8 @@ const putRequest = async (req, res) => {
             `, [dateTime, requestId]);
         }
 
-        // console.log(requestId, remarks, status, adminId, studentEmail);
-        // sendEmail(requestId, remarks, status, adminId, studentEmail);
+        // console.log(requestId, req.body.remarks, req.body.status, staffId, studentEmail, req.body['share-link']);
+        // sendEmail(requestId, req.body.remarks, req.body.status, staffId, studentEmail, req.body['share-link']);
         res.sendStatus(200);
     } catch (error) {
         console.log(error);
@@ -132,4 +161,21 @@ const putRequest = async (req, res) => {
     }
 }
 
-module.exports = { getRequests, postRequest, putRequest }
+const approveFee = async (req, res) => {
+    const { requestId } = req.body;
+
+    try {
+        await db.query(`
+            UPDATE request_receiving_method
+            SET approval = ?
+            WHERE request_id = ?    
+        `, ['Yes', requestId]);
+
+        res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+}
+
+module.exports = { getRequests, postRequest, putRequest, approveFee }

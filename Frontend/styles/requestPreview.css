@@ -41,3 +41,17 @@ select {
     text-align: center;
     color: green;
 }
+
+.approval-no,
+.approval-yes {
+    padding: 5px 5px;
+    border-radius: 5px;
+}
+
+.approval-no {
+    background-color: #f38686;
+}
+
+.approval-yes {
+    background-color: #9af386;
+}

@@ -32,7 +32,9 @@
 .name-fields-container,
 .email-and-number,
 .type-and-copies,
-.remarks-and-status {
+.remarks-and-status,
+.method-and-address,
+.delivery-fee-and-share-link {
     display: grid;
     column-gap: 10px;
 }
@@ -48,6 +50,11 @@
 .type-and-copies,
 .remarks-and-status {
     grid-template-columns: 1fr 0.2fr;
+}
+
+.method-and-address,
+.delivery-fee-and-share-link {
+    grid-template-columns: 0.2fr 1fr;
 }
 
 select {
@@ -66,7 +73,9 @@ select {
 
     .name-fields-container,
     .email-and-number,
-    .type-and-copies {
+    .type-and-copies,
+    .method-and-address,
+    .delivery-fee-and-share-link {
         grid-template-columns: 100%;
     }
 }

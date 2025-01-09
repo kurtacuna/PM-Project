@@ -37,7 +37,7 @@ function renderHeaders(page, requests) {
                 Date Received
             </th>
             <th class="reference-number-column">
-                Reference Number
+                GCash Reference Number
             </th>
         </tr>
     `;
@@ -57,7 +57,7 @@ function renderHeaders(page, requests) {
                 Date Completed
             </th>
             <th class="reference-number-column">
-                Reference Number
+                GCash Reference Number
             </th>
         </tr>
     `;
@@ -77,7 +77,7 @@ function renderHeaders(page, requests) {
                 Date Released
             </th>
             <th class="reference-number-column">
-                Reference Number
+                GCash Reference Number
             </th>
         </tr>
     `;
@@ -97,7 +97,7 @@ function renderHeaders(page, requests) {
                 Date Rejected
             </th>
             <th class="reference-number-column">
-                Reference Number
+                GCash Reference Number
             </th>
         </tr>
     `;

@@ -6,6 +6,8 @@ import { displayPage } from "./displayPage.js";
 import { serverErrorMessage } from "../common/serverErrorMessage.js";
 import { formatDateTime } from "../common/retrieveDate.js";
 import { refreshAccessToken } from "../common/refreshAccessToken.js";
+import { inputNumbersOnly } from "../common/inputNumbersOnly.js";
+import { checkAllFields } from "../common/checkFields.js";
 
 export function listenForClickOnRequest(requests) {
     document.querySelectorAll('.request').forEach((item) => {
@@ -23,6 +25,8 @@ function displayPreview(requests, item) {
     const { requestId } = item.dataset;
     const matchingRequest = matchRequest(requests, requestId);
     
+    console.log(matchingRequest);
+
     document.querySelector('.js-preview-container').innerHTML = `
         <div>
             ${matchingRequest.staff_id ? `Updated By: ${matchingRequest.staff_id}` : `` }
@@ -106,29 +110,62 @@ function displayPreview(requests, item) {
                     </label>
                     <input type="text" name="document-details" id="document-details" value="${matchingRequest.document_details}" disabled>
                 </div>
-            </div> 
+            </div>
+            <div class="receiving-method-container">
+                <div class="header">
+                    RECEIVING METHOD
+                </div>
+                <div class="method-and-address">
+                    <div class="field-container">
+                        <label class="field-label" for="receiving-method">
+                            Receiving Method
+                        </label>
+                        <input type="text" name="receiving-method" id="receiving-method" value="${matchingRequest.receiving_option}" disabled>
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label" for="delivery-address">
+                            Delivery Address
+                        </label>
+                        <input type="text" name="delivery-address" id="delivery-address" value="${matchingRequest.delivery_address}" disabled>
+                    </div>
+                </div>
+            </div>
         </form>
         <div class="js-additional-field">
             ${determineFooter(matchingRequest)}
         </div>
     `;
 
+    if (document.getElementById('delivery-fee')) {
+        inputNumbersOnly(document.getElementById('delivery-fee'));
+    }
+
     if (document.querySelector('.js-update-button')) {
         document.querySelector('.js-update-button').addEventListener('click', async () => {
-            if (await sendUpdate(requestId, matchingRequest.email_address)) {
-                document.querySelector('.js-update-success-message').innerText = 'Updated Successfully.';
+            if (checkAllFields(document.querySelector('.js-pending-fields'))) {
+                const successful = await sendUpdate(document.getElementById('status').value, matchingRequest);
+                if (successful === true) {
+                    document.querySelector('.js-update-success-message').innerText = 'Updated Successfully.';
+                } else if (successful === false) {
+                    serverErrorMessage();
+                }
             } else {
-                serverErrorMessage();
+                alert("Except 'Delivery Share Link', all fields are required.");
             }
         });
     } 
     
     if (document.querySelector('.js-release-button')) {
         document.querySelector('.js-release-button').addEventListener('click', async () => {
-            if (await sendUpdate(requestId, matchingRequest.email_address)) {
-                document.querySelector('.js-release-success-message').innerText = 'Released Successfully.';
+            if (checkAllFields(document.querySelector('.js-to-receive-fields'))) {
+                const successful = await sendUpdate('To Receive', matchingRequest);
+                if (successful === true) {
+                    document.querySelector('.js-release-success-message').innerText = 'Released Successfully.';
+                } else if (successful === false) {
+                    serverErrorMessage();
+                }
             } else {
-                serverErrorMessage();
+                alert('Please fill in all fields');
             }
         });
     }
@@ -141,18 +178,23 @@ function displayPreview(requests, item) {
 }
 
 // Sends the updated status and remarks to the server
-async function sendUpdate(requestId, studentEmail) {
-    const remarks = document.getElementById('remarks').value;
+async function sendUpdate(status, matchingRequest) {
+    const requestId = matchingRequest.request_id;
+    const studentEmail = matchingRequest.email_address;
     const staffId = sessionStorage.getItem('username');
-    let status;
-    if (document.getElementById('status')) {
-        status = document.getElementById('status').value;
-    } else {
-        status = 'Released';
+
+    let formDataObject;
+    const topText = document.querySelector('.js-top-text').innerText;
+    if (topText === 'PENDING') {
+        formDataObject = Object.fromEntries(new FormData(document.querySelector('.js-pending-fields')));
+    } else if (topText === 'TO RECEIVE') {
+        formDataObject = Object.fromEntries(new FormData(document.querySelector('.js-to-receive-fields')));
     }
-    
-    const remarksAndStatusObject = { requestId, remarks, status, staffId, studentEmail }
-    
+
+    formDataObject = { ...formDataObject, requestId, studentEmail, staffId };
+
+    console.log(formDataObject);
+
     let sessionAccessToken = sessionStorage.getItem('accessToken');
     let response = await fetch('/requests', {
         method: 'PUT',
@@ -160,7 +202,7 @@ async function sendUpdate(requestId, studentEmail) {
             'Authorization': `Bearer ${sessionAccessToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(remarksAndStatusObject)
+        body: JSON.stringify(formDataObject)
     });
 
     if (response.status === 401 || response.status === 403) {
@@ -174,12 +216,12 @@ async function sendUpdate(requestId, studentEmail) {
                 'Authorization': `Bearer ${sessionAccessToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(remarksAndStatusObject)
+            body: JSON.stringify(formDataObject)
         });
     }
 
     if (response.status === 500) {
-        return;
+        return false;
     }
 
     if (response.status === 200) {
@@ -207,26 +249,34 @@ function determineFooter(matchingRequest) {
         dateRejected = formatDateTime(dateRejected);
     }
 
+    const page = document.title;
+
     let forPending = `
-        <div class="fields remarks-and-status">
-            <div class="field-container">
-                <label class="field-label open" for="remarks">
-                    Add Remarks
-                </label>
-                <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
+        <form class="fields js-pending-fields">
+            <div class="header open">
+                Update Request Details
             </div>
-            <div class="field-container">
-                <label class="field-label open" for="status">
-                    Status
-                </label>
-                <select name="status" id="status">
-                    <option value="Pending">Pending</option>
-                    <option value="To Receive">To Receive</option>
-                    <option value="Released">Released</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
+            ${showDeliveryFields(matchingRequest, page)}
+            <div class="fields remarks-and-status">
+                <div class="field-container">
+                    <label class="field-label open" for="remarks">
+                        Add Remarks
+                    </label>
+                    <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
+                </div>
+                <div class="field-container">
+                    <label class="field-label open" for="status">
+                        Status
+                    </label>
+                    <select name="status" id="status">
+                        <option value="Pending">Pending</option>
+                        <option value="To Receive" ${matchingRequest.approval === 'No' ? 'disabled' : ''}>To Receive</option>
+                        <option value="Released" ${matchingRequest.approval === 'No' ? 'disabled' : ''}>Released</option>          
+                        <option value="Rejected">Rejected</option> 
+                    </select>
+                </div>
             </div>
-        </div>
+        </form>
         <div class="buttons-container">
             <button class="js-go-back-button">
                 Go Back
@@ -239,17 +289,23 @@ function determineFooter(matchingRequest) {
     `;
 
     let forToReceive = `
-        <div class="fields field-container">
-            <label class="field-label open" for="remarks">
-                Remarks
-            </label>
-            <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
-        </div>
-        <div class="completed-on">
-            <div class="text">
-                Completed on: ${dateCompleted}
+        <form class="fields js-to-receive-fields">
+            <div class="header">
+                Update Request Details
             </div>
-        </div>
+            ${showDeliveryFields(matchingRequest, page)}
+            <div class="fields field-container">
+                <label class="field-label open" for="remarks">
+                    Remarks
+                </label>
+                <input type="text" name="remarks" id="remarks" maxlength="255" value="${remarks}">
+            </div>
+            <div class="completed-on">
+                <div class="text">
+                    Completed on: ${dateCompleted}
+                </div>
+            </div>
+        </form>
         <div class="buttons-container">
             <button class="js-go-back-button">
                 Go Back
@@ -262,6 +318,10 @@ function determineFooter(matchingRequest) {
     `;
 
     let forReleased = `
+        <div class="header">
+            Update Request Details
+        </div>
+        ${showDeliveryFields(matchingRequest, page)}
         <div class="fields field-container">
             <label class="field-label" for="remarks">
                 Remarks
@@ -281,6 +341,10 @@ function determineFooter(matchingRequest) {
     `;
 
     let forRejected = `
+        <div class="header">
+            Update Request Details
+        </div>
+        ${showDeliveryFields(matchingRequest, page)}
         <div class="fields field-container">
             <label class="field-label" for="remarks">
                 Remarks
@@ -307,5 +371,30 @@ function determineFooter(matchingRequest) {
         return forReleased;
     } else if (status === 'Rejected') {
         return forRejected;
+    }
+}
+
+function showDeliveryFields(matchingRequest, page) {
+    const receivingOption = matchingRequest.receiving_option;
+    
+    if (receivingOption === 'Delivery') {
+        return `
+            <div class="fields delivery-fee-and-share-link">
+                <div class="field-container  ${matchingRequest.approval === 'No' ? 'approval-no' : 'approval-yes'}">
+                    <label class="field-label open" for="delivery-fee">
+                        Delivery Fee
+                    </label>
+                    <input type="text" name="delivery-fee" id="delivery-fee" maxlength="5" value="${matchingRequest.delivery_fee || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
+                </div>
+                <div class="field-container">
+                    <label class="field-label open" for="share-link">
+                        Delivery Share Link
+                    </label>
+                    <input type="text" name="share-link" id="share-link" maxlength="255" value="${matchingRequest.share_link || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
+                </div>
+            </div>
+        `;
+    } else {
+        return '';
     }
 }

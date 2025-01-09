@@ -2,10 +2,11 @@
 // Sends an update to the specified email in the request
 
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
-const sendEmail = (requestId, remarks, status, adminId, studentEmail) => {
-    const registrarEmail = 'pmprojectnodemailer@gmail.com';
-    const password = 'aava gkqo doue qmbz';
+const sendEmail = (requestId, remarks, status, adminId, studentEmail, shareLink) => {
+    const registrarEmail = process.env.NODEMAILER_EMAIL;
+    const password = process.env.NODEMAILER_PASSWORD;
     const subject = 'Registrar Document Request Update';
     
     const transporter = nodemailer.createTransport({
@@ -29,26 +30,27 @@ const sendEmail = (requestId, remarks, status, adminId, studentEmail) => {
             `;
         } else if (status === 'To Receive') {
             text = `
+                Your request has been completed. Please proceed to the registrar to claim the document.\n\n
                 Update by: ${adminId}\n
                 Request ID: ${requestId}\n
                 Status: ${status}\n
-                Your request has been completed. Please proceed to the registrar to claim the document.\n
                 Remarks: ${remarks}
             `;
         } else if (status === 'Released') {
             text = `
+                Your requested document has been released. If there are any problems, please proceed to the registrar.\n\n
                 Update by: ${adminId}\n
                 Request ID: ${requestId}\n
                 Status: ${status}\n
-                Your requested document has been released. If there are any problems, please proceed to the registrar.\n
+                ${shareLink ? `Track Delivery: ${shareLink}` : ''}\n
                 Remarks: ${remarks}
             `;
         } else if (status === 'Rejected') {
             text = `
+                Your request has been rejected. Please proceed to the registrar for any clarification.\n\n
                 Update by: ${adminId}\n
                 Request ID: ${requestId}\n
                 Status: ${status}\n
-                Your request has been rejected. Please proceed to the registrar for any clarification.\n
                 Remarks: ${remarks}
             `;
         }
