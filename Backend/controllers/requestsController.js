@@ -195,4 +195,40 @@ const rejectFee = async (req, res) => {
     }
 }
 
-module.exports = { getRequests, postRequest, putRequest, approveFee, rejectFee }
+const Excel = require('exceljs');
+const downloadRequests = async (req, res) => {
+    console.log('received');
+
+    try {
+        const workbook = new Excel.Workbook();
+        const worksheet = workbook.addWorksheet('Sheet1');
+
+        const [requests] = await db.query(`
+            SELECT * FROM request_with_details
+            ORDER BY date_requested DESC
+        `);
+
+        console.log(requests[0])
+
+        worksheet.columns = Object.keys(requests[0]).map((key) => ({
+            header: key,
+            key: key,
+            width: 50
+        }));
+
+        requests.forEach((request) => {
+            worksheet.addRow(request);
+        });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=requests.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.status(200).end();
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+};
+
+module.exports = { getRequests, postRequest, putRequest, approveFee, rejectFee, downloadRequests }

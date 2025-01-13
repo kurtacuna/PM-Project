@@ -9,5 +9,6 @@ router.route('/')
 
 router.put('/approve', requestsController.approveFee)
 router.put('/reject', requestsController.rejectFee)
+router.get('/download_all_requests', requestsController.downloadRequests)
 
 module.exports = router;

@@ -93,6 +93,16 @@ export async function displaySettings() {
                             </button>
                         </div>
                     </div>
+                    <div class="section">
+                        <div class="section-header">
+                            Download All Requests
+                        </div>
+                        <div>
+                            <button class="js-download-all-requests-button">
+                                Download
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,11 +123,15 @@ export async function displaySettings() {
     const changeButtonAbort = new AbortController();
     document.querySelector('.js-change-gcash-number-button').addEventListener('click', handleChangeButtonClick, { signal: changeButtonAbort.signal });
 
+    const downloadButtonAbort = new AbortController();
+    document.querySelector('.js-download-all-requests-button').addEventListener('click', handleDownloadButtonClick, { signal: downloadButtonAbort.signal });
+
     document.body.addEventListener('click', (event) => {
         if (event.target.classList.contains('link')) {
             addButtonAbort.abort();
             updateButtonAbort.abort();
             changeButtonAbort.abort();
+            downloadButtonAbort.abort();
         }
     });
 }
@@ -389,5 +403,56 @@ async function changeGcashNumber() {
 
     if (response.status === 200) {
         document.querySelector('.js-settings-link').click();
+    }
+}
+
+async function handleDownloadButtonClick() {
+    if (await downloadAllRequests()) {
+        serverErrorMessage();
+    } else {
+        alert(`Please click the button again if the download doesn't start`);
+    }
+}
+
+async function downloadAllRequests() {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+
+    let response = await fetch('/requests/download_all_requests' , {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
+        }
+    });
+
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/requests/download_all_requests' , {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+            }
+        });
+    }
+
+    if (response.status === 500) {
+        return true;
+    }
+
+    if (response.status === 200) {
+        // Create a URL for the response blob and trigger the download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'requests.xlsx'; // Change the filename if needed
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+        return;
     }
 }
