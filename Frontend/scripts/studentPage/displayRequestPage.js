@@ -104,7 +104,7 @@ function displayForms(options) {
                         <label class="field-label" for="number-of-copies">
                             Number of Copies
                         </label>
-                        <input type="number" name="number-of-copies" id="number-of-copies" min="1" max="50" value="2">
+                        <input type="number" name="number-of-copies" id="number-of-copies" min="1" max="10" value="2">
                     </div>
                 </div>
                 <div class="field-container">
