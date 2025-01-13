@@ -150,7 +150,7 @@ function displayPreview(requests, item) {
                     serverErrorMessage();
                 }
             } else {
-                alert("Except 'Delivery Share Link', all fields are required.");
+                alert("Please fill in all fields.");
             }
         });
     } 
@@ -270,8 +270,8 @@ function determineFooter(matchingRequest) {
                     </label>
                     <select name="status" id="status">
                         <option value="Pending">Pending</option>
-                        <option value="To Receive" ${matchingRequest.approval === 'No' ? 'disabled' : ''}>To Receive</option>
-                        <option value="Released" ${matchingRequest.approval === 'No' ? 'disabled' : ''}>Released</option>          
+                        <option value="To Receive" ${matchingRequest.approval === 'Undecided' ? 'disabled' : ''}>To Receive</option>
+                        <option value="Released" ${matchingRequest.approval === 'Undecided' ? 'disabled' : ''}>Released</option>          
                         <option value="Rejected">Rejected</option> 
                     </select>
                 </div>
@@ -378,23 +378,44 @@ function showDeliveryFields(matchingRequest, page) {
     const receivingOption = matchingRequest.receiving_option;
     
     if (receivingOption === 'Delivery') {
-        return `
-            <div class="fields delivery-fee-and-share-link">
-                <div class="field-container  ${matchingRequest.approval === 'No' ? 'approval-no' : 'approval-yes'}">
+        if (matchingRequest.approval === 'Yes') {
+            return `
+                <div class="fields delivery-fee-and-share-link">
+                    <div class="field-container  ${showFeeBackground(matchingRequest)}">
+                        <label class="field-label open" for="delivery-fee">
+                            Delivery Fee
+                        </label>
+                        <input type="text" name="delivery-fee" id="delivery-fee" maxlength="5" value="${matchingRequest.delivery_fee || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
+                    </div>
+                    <div class="field-container">
+                        <label class="field-label open" for="share-link">
+                            Delivery Share Link
+                        </label>
+                        <input type="text" name="share-link" id="share-link" maxlength="255" value="${matchingRequest.share_link || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="field-container  ${showFeeBackground(matchingRequest)}">
                     <label class="field-label open" for="delivery-fee">
                         Delivery Fee
                     </label>
-                    <input type="text" name="delivery-fee" id="delivery-fee" maxlength="5" value="${matchingRequest.delivery_fee || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
+                    <input type="text" name="delivery-fee" id="delivery-fee" maxlength="5" value="${matchingRequest.delivery_fee || ''}" ${matchingRequest.approval === 'No' || page === 'Released' || page === 'Rejected' ? 'disabled' : ''}>
                 </div>
-                <div class="field-container">
-                    <label class="field-label open" for="share-link">
-                        Delivery Share Link
-                    </label>
-                    <input type="text" name="share-link" id="share-link" maxlength="255" value="${matchingRequest.share_link || ''}" ${page === 'Pending' || page === 'To Receive' ? '' : 'disabled'}>
-                </div>
-            </div>
-        `;
+            `;
+        }
     } else {
         return '';
+    }
+}
+
+function showFeeBackground(matchingRequest) {
+    if (matchingRequest.approval === 'Yes') {
+        return 'approval-yes';
+    } else if (matchingRequest.approval === 'No') {
+        return 'approval-no';
+    } else if (matchingRequest.approval === 'Undecided') {
+        return 'approval-undecided';
     }
 }

@@ -178,4 +178,21 @@ const approveFee = async (req, res) => {
     }
 }
 
-module.exports = { getRequests, postRequest, putRequest, approveFee }
+const rejectFee = async (req, res) => {
+    const { requestId } = req.body;
+
+    try {
+        await db.query(`
+            UPDATE request_receiving_method
+            SET approval = ?
+            WHERE request_id = ?    
+        `, ['No', requestId]);
+
+        res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+}
+
+module.exports = { getRequests, postRequest, putRequest, approveFee, rejectFee }

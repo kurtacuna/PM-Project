@@ -43,15 +43,20 @@ select {
 }
 
 .approval-no,
-.approval-yes {
+.approval-yes,
+.approval-undecided {
     padding: 5px 5px;
     border-radius: 5px;
 }
 
-.approval-no {
+.approval-undecided {
     background-color: #f38686;
 }
 
 .approval-yes {
     background-color: #9af386;
+}
+
+.approval-no {
+    background-color: #8698f3;
 }

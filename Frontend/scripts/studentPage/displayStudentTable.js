@@ -114,9 +114,12 @@ function displayStatusOnRequestClick(requests) {
                             <button class="button-container js-close-button">
                                 Close
                             </button>
-                            ${matchingRequest.status === 'Pending' && matchingRequest.approval === 'No' && matchingRequest.delivery_fee ? `
+                            ${matchingRequest.status === 'Pending' && matchingRequest.approval === 'Undecided' && matchingRequest.delivery_fee ? `
                                 <button class="js-approve-button">
                                     Approve
+                                </button>
+                                <button class="js-reject-button">
+                                    Reject
                                 </button>
                             ` : ''}
                         </div>
@@ -134,6 +137,13 @@ function displayStatusOnRequestClick(requests) {
                     if (await approveFee(matchingRequest.request_id)) {
                         document.querySelector('.js-approve-button').innerText = 'Approved';
                         document.querySelector('.js-approve-button').style.backgroundImage = 'radial-gradient(circle at center, #2ca018 30%, rgb(19 117 0))';
+                    } else {
+                        serverErrorMessage();
+                    }
+                } else if (event.target.classList.contains('js-reject-button')) {
+                    if (await rejectFee(matchingRequest.request_id)) {
+                        document.querySelector('.js-reject-button').innerText = 'Rejected';
+                        document.querySelector('.js-reject-button').style.backgroundImage = 'radial-gradient(circle, rgb(24 51 160) 30%, rgb(21 0 117))';
                     } else {
                         serverErrorMessage();
                     }
@@ -176,7 +186,7 @@ function showStatusDetails(status, date, matchingRequest) {
                 <span class="${status.toLowerCase()}">${status}</span>
                 <div class="delivery-fee">
                     ${matchingRequest.receiving_option === 'Delivery' && matchingRequest.delivery_fee ? `
-                        <b>${matchingRequest.approval === 'Yes' ? '(Approved)' : ''} Delivery Fee:</b> ${matchingRequest.delivery_fee} PESOS
+                        <b>${determineApproval(matchingRequest)} Delivery Fee:</b> ${matchingRequest.delivery_fee} PESOS
                     ` : ''}
                 </div>
                 <div class="date">
@@ -256,5 +266,51 @@ async function approveFee(requestId) {
 
     if (response.status === 200) {
         return true;
+    }
+}
+
+async function rejectFee(requestId) {
+    let sessionAccessToken = sessionStorage.getItem('accessToken');
+
+    let response = await fetch('/requests/reject', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${sessionAccessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ requestId })
+    });
+
+    if (response.status === 401 || response.status === 403) {
+        const accessToken = await refreshAccessToken();
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionAccessToken = accessToken;
+
+        response = await fetch('/requests/reject', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ requestId })
+        });
+    }
+
+    if (response.status === 500) {
+        return;
+    }
+
+    if (response.status === 200) {
+        return true;
+    }
+}
+
+function determineApproval(matchingRequest) {
+    if (matchingRequest.approval === 'Yes') {
+        return '(Approved)';
+    } else if (matchingRequest.approval === 'No') {
+        return '(Rejected)';
+    } else {
+        return '';
     }
 }

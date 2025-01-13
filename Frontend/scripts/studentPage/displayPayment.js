@@ -255,7 +255,7 @@ function checkIfDelivery() {
                     <input type="text" name="delivery-address" id="delivery-address" maxlength="255" placeholder="Street Address, Barangay, City/Municipality, Postal Code">
                 `;
                 approvalInputContainer.innerHTML = `
-                    <input type="text" name="approval" id="approval" value="No" style="display: none;">
+                    <input type="text" name="approval" id="approval" value="Undecided" style="display: none;">
                 `;
             }
         }

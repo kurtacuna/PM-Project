@@ -63,7 +63,7 @@ CREATE TABLE request_receiving_method (
     delivery_address VARCHAR(255),
     delivery_fee DECIMAL(7, 2),
     share_link VARCHAR(255),
-    approval VARCHAR(5)
+    approval VARCHAR(15)
 );
 
 CREATE TABLE request_details (

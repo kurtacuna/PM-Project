@@ -8,5 +8,6 @@ router.route('/')
     .put(requestsController.putRequest);
 
 router.put('/approve', requestsController.approveFee)
+router.put('/reject', requestsController.rejectFee)
 
 module.exports = router;
