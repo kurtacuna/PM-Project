@@ -25,8 +25,8 @@ CREATE TABLE students(
 );
 
 INSERT INTO students (student_id, password)
-VALUES	('student1', '123'),
-		('student2', '123');
+VALUES	('TUPM-01-0001', '123'),
+		('TUPM-02-0002', '123');
         
 CREATE TABLE documents(
 	document_id VARCHAR(20) PRIMARY KEY,

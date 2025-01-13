@@ -43,26 +43,26 @@ function displayForms(options) {
                     <label class="field-label" for="student-number">
                         Student Number
                     </label>
-                    <input type="text" name="student-number" id="student-number" maxlength="20" value="TEST">
+                    <input type="text" name="student-number" id="student-number" maxlength="20" value="TUPM-01-0001">
                 </div>
                 <div class="name-fields-container">
                     <div class="field-container">
                         <label class="field-label" for="lastname">
                             Last Name
                         </label>
-                        <input type="text" name="lastname" id="lastname" maxlength="50" value="TEST">
+                        <input type="text" name="lastname" id="lastname" maxlength="50" value="Dela Cruz">
                     </div>
                     <div class="field-container">
                         <label class="field-label" for="firstname">
                             First Name
                         </label>
-                        <input type="text" name="firstname" id="firstname" maxlength="100" value="TEST">
+                        <input type="text" name="firstname" id="firstname" maxlength="100" value="Juan">
                     </div>
                     <div class="field-container">
                         <label class="field-label" for="middlename">
                             Middle Name
                         </label>
-                        <input type="text" name="middlename" id="middlename" maxlength="50" value="TEST">
+                        <input type="text" name="middlename" id="middlename" maxlength="50" value="D">
                     </div>
                 </div>
                 <div class="email-and-number">
@@ -76,7 +76,7 @@ function displayForms(options) {
                         <label class="field-label" for="contact-number">
                             Contact Number
                         </label>
-                        <input type="tel" name="contact-number" id="contact-number" maxlength="20" value="123">
+                        <input type="tel" name="contact-number" id="contact-number" maxlength="20" value="09080706050">
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@ function displayForms(options) {
                     <label class="field-label" for="purpose-of-request">
                         Purpose of Request
                     </label>
-                    <input type="text" name="purpose-of-request" id="purpose-of-request" maxlength="255" value="TEST">
+                    <input type="text" name="purpose-of-request" id="purpose-of-request" maxlength="255" value="For employment">
                 </div>
                 <div class="type-and-copies">
                     <div class="field-container">
@@ -111,7 +111,7 @@ function displayForms(options) {
                     <label class="field-label" for="document-details">
                         Document Details
                     </label>
-                    <input type="text" name="document-details" id="document-details" maxlength="255" value="TEST">
+                    <input type="text" name="document-details" id="document-details" maxlength="255" value="Please include all from 1st to 4th year">
                 </div>
             </div>
         </form>

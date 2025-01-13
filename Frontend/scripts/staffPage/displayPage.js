@@ -10,6 +10,9 @@ export function displayPage(requests, page) {
     if (document.querySelector('.js-settings')) {
         document.querySelector('.js-settings').innerHTML = '';
     }
+    if (document.querySelector('.js-statistics')) {
+        document.querySelector('.js-statistics').innerHTML = '';
+    }
     clearSearch();
     document.title = page;
     document.querySelector('.js-top-text').innerText = page.toUpperCase();

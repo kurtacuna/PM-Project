@@ -75,7 +75,8 @@ select {
     .email-and-number,
     .type-and-copies,
     .method-and-address,
-    .delivery-fee-and-share-link {
+    .delivery-fee-and-share-link,
+    .remarks-and-status {
         grid-template-columns: 100%;
     }
 }

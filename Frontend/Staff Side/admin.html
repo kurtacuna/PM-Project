@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
+        
         <title>Admin</title>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.js"></script>
 
         <link rel="icon" type="image/x-icon" href="../images/Technological_University_of_the_Philippines_Seal.svg.png">
         <link rel="stylesheet" href="../styles/fonts.css">
@@ -13,6 +16,7 @@
         <link rel="stylesheet" href="../styles/requestPreview.css">
         <link rel="stylesheet" href="../styles/settings.css">
         <link rel="stylesheet" href="../styles/animations.css">
+        <link rel="stylesheet" href="../styles/statistics.css">
     </head>
 
     <body>
@@ -34,6 +38,9 @@
                 </div>
                 <div class="link js-rejected-link">
                     <img class="rejected-icon" src="../images/icons/fluent_text-change-reject-24-filled.png">
+                </div>
+                <div class="link js-statistics-link">
+                    <img class="statistics-icon" src="../images/icons/gridicons_stats-alt.png">
                 </div>
                 <div class="link js-settings-link">
                     <img class="settings-icon" src="../images/icons/material-symbols_settings.png">
@@ -60,8 +67,8 @@
             </div>
             <div class="preview-container js-preview-container"></div>
             <div class="no-requests-container js-no-requests-container"></div>
-            <div class="settings js-settings">
-            </div>
+            <div class="settings js-settings"></div>
+            <div class="statistics js-statistics"></div>
         </main>
 
         <script type="module" src="../scripts/staffPage/startStaffPage.js"></script>

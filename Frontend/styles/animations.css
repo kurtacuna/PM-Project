@@ -2,7 +2,8 @@ button,
 input,
 .request,
 .filter-button,
-.link {
+.link,
+.tab {
     transition: all 0.15s ease;
 }
 
@@ -28,6 +29,15 @@ select:hover {
 
 .link:hover {
     background-color: white;
+}
+
+.tab:hover {
+    background-color: #fff4f4;
+}
+
+.tab:hover {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .link:before,
